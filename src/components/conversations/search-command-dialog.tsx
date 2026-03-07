@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { formatDistanceToNow } from "date-fns"
+import { enUS, zhCN, zhTW } from "date-fns/locale"
+import { useLocale, useTranslations } from "next-intl"
 import { useFolderContext } from "@/contexts/folder-context"
 import { useTabContext } from "@/contexts/tab-context"
 import { listFolderConversations } from "@/lib/tauri"
@@ -31,6 +33,10 @@ export function SearchCommandDialog({
   open,
   onOpenChange,
 }: SearchCommandDialogProps) {
+  const t = useTranslations("Folder.search")
+  const locale = useLocale()
+  const dateFnsLocale =
+    locale === "zh-CN" ? zhCN : locale === "zh-TW" ? zhTW : enUS
   const { folderId, conversations } = useFolderContext()
   const { openTab } = useTabContext()
 
@@ -96,12 +102,12 @@ export function SearchCommandDialog({
 
   return (
     <CommandDialog
-      title="Search conversations"
+      title={t("dialogTitle")}
       open={open}
       onOpenChange={onOpenChange}
     >
       <CommandInput
-        placeholder="Search conversations..."
+        placeholder={t("placeholder")}
         value={query}
         onValueChange={setQuery}
       />
@@ -116,7 +122,7 @@ export function SearchCommandDialog({
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
-            All
+            {t("allAgents")}
           </button>
           {availableAgents.map((at) => (
             <button
@@ -138,10 +144,10 @@ export function SearchCommandDialog({
       <CommandList className="min-h-96">
         <CommandEmpty>
           {searching
-            ? "Searching..."
+            ? t("searching")
             : !query.trim() && !agentFilter
-              ? "键入搜索以查询会话"
-              : "No results found."}
+              ? t("typeToSearch")
+              : t("noResults")}
         </CommandEmpty>
         {results.length > 0 && (
           <CommandGroup>
@@ -159,7 +165,7 @@ export function SearchCommandDialog({
                   )}
                 />
                 <span className="flex-1 truncate">
-                  {conv.title || "Untitled conversation"}
+                  {conv.title || t("untitledConversation")}
                 </span>
                 <span className="text-xs text-muted-foreground shrink-0">
                   {AGENT_LABELS[conv.agent_type]}
@@ -167,6 +173,7 @@ export function SearchCommandDialog({
                 <span className="text-xs text-muted-foreground shrink-0">
                   {formatDistanceToNow(new Date(conv.created_at), {
                     addSuffix: true,
+                    locale: dateFnsLocale,
                   })}
                 </span>
               </CommandItem>

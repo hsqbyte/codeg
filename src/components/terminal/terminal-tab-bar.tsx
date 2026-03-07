@@ -2,7 +2,11 @@
 
 import { useRef, useState } from "react"
 import { Minus, Plus, X } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useTerminalContext } from "@/contexts/terminal-context"
+import { useShortcutSettings } from "@/hooks/use-shortcut-settings"
+import { useIsMac } from "@/hooks/use-is-mac"
+import { formatShortcutLabel } from "@/lib/keyboard-shortcuts"
 import { Button } from "@/components/ui/button"
 import {
   ContextMenu,
@@ -13,6 +17,9 @@ import {
 } from "@/components/ui/context-menu"
 
 export function TerminalTabBar() {
+  const t = useTranslations("Folder.terminal")
+  const { shortcuts } = useShortcutSettings()
+  const isMac = useIsMac()
   const {
     tabs,
     activeTabId,
@@ -83,20 +90,20 @@ export function TerminalTabBar() {
           </ContextMenuTrigger>
           <ContextMenuContent>
             <ContextMenuItem onSelect={() => startRename(tab.id, tab.title)}>
-              重命名
+              {t("rename")}
             </ContextMenuItem>
             <ContextMenuSeparator />
             <ContextMenuItem onSelect={() => closeTerminal(tab.id)}>
-              关闭
+              {t("close")}
             </ContextMenuItem>
             <ContextMenuItem
               onSelect={() => closeOtherTerminals(tab.id)}
               disabled={tabs.length <= 1}
             >
-              关闭其它
+              {t("closeOthers")}
             </ContextMenuItem>
             <ContextMenuItem onSelect={() => closeAllTerminals()}>
-              关闭所有
+              {t("closeAll")}
             </ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
@@ -114,7 +121,9 @@ export function TerminalTabBar() {
         size="icon"
         className="h-6 w-6 shrink-0 ml-auto"
         onClick={toggle}
-        title="Hide Terminal (Ctrl+J)"
+        title={t("hideTerminal", {
+          shortcut: formatShortcutLabel(shortcuts.toggle_terminal, isMac),
+        })}
       >
         <Minus className="h-3 w-3" />
       </Button>

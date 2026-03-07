@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Reorder } from "motion/react"
 import { FileText, GitCompare, X } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useWorkspaceContext } from "@/contexts/workspace-context"
 import { useShortcutSettings } from "@/hooks/use-shortcut-settings"
 import { matchShortcutEvent } from "@/lib/keyboard-shortcuts"
@@ -16,6 +17,7 @@ import {
 } from "@/components/ui/context-menu"
 
 export function FileWorkspaceTabBar() {
+  const t = useTranslations("Folder.fileWorkspace")
   const {
     mode,
     activePane,
@@ -80,7 +82,7 @@ export function FileWorkspaceTabBar() {
   if (fileTabs.length === 0) {
     return (
       <div className="h-10 px-3 flex items-center border-b border-border text-xs text-muted-foreground">
-        Files
+        {t("files")}
       </div>
     )
   }
@@ -159,7 +161,7 @@ export function FileWorkspaceTabBar() {
                       event.stopPropagation()
                       closeFileTab(tab.id)
                     }}
-                    aria-label="Close file tab"
+                    aria-label={t("closeFileTab")}
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -167,14 +169,14 @@ export function FileWorkspaceTabBar() {
               </ContextMenuTrigger>
               <ContextMenuContent>
                 <ContextMenuItem onSelect={() => closeFileTab(tab.id)}>
-                  关闭
+                  {t("close")}
                 </ContextMenuItem>
                 <ContextMenuItem onSelect={() => closeOtherFileTabs(tab.id)}>
-                  关闭其它
+                  {t("closeOthers")}
                 </ContextMenuItem>
                 <ContextMenuSeparator />
                 <ContextMenuItem onSelect={closeAllFileTabs}>
-                  关闭所有
+                  {t("closeAll")}
                 </ContextMenuItem>
               </ContextMenuContent>
             </ContextMenu>

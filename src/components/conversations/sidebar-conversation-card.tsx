@@ -2,9 +2,11 @@
 
 import { memo, useState, useCallback } from "react"
 import { formatDistanceToNow } from "date-fns"
+import { enUS, zhCN, zhTW } from "date-fns/locale"
 import { GitBranch, Pencil, Trash2, Circle, Download, Plus } from "lucide-react"
+import { useLocale, useTranslations } from "next-intl"
 import type { DbConversationSummary, ConversationStatus } from "@/lib/types"
-import { STATUS_COLORS, STATUS_LABELS } from "@/lib/types"
+import { STATUS_COLORS } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { AgentIcon } from "@/components/agent-icon"
 import {
@@ -69,12 +71,18 @@ export const SidebarConversationCard = memo(function SidebarConversationCard({
   onImport,
   importing,
 }: SidebarConversationCardProps) {
+  const t = useTranslations("Folder.conversationCard")
+  const tStatus = useTranslations("Folder.statusLabels")
+  const locale = useLocale()
+  const dateFnsLocale =
+    locale === "zh-CN" ? zhCN : locale === "zh-TW" ? zhTW : enUS
   const [renameOpen, setRenameOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [renameValue, setRenameValue] = useState("")
 
   const timeAgo = formatDistanceToNow(new Date(conversation.updated_at), {
     addSuffix: true,
+    locale: dateFnsLocale,
   })
 
   const handleClick = useCallback(() => {
@@ -123,7 +131,7 @@ export const SidebarConversationCard = memo(function SidebarConversationCard({
                 className="size-4 shrink-0"
               />
               <span className="text-sm font-medium truncate">
-                {conversation.title || "Untitled conversation"}
+                {conversation.title || t("untitledConversation")}
               </span>
             </div>
             <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
@@ -142,20 +150,20 @@ export const SidebarConversationCard = memo(function SidebarConversationCard({
             <>
               <ContextMenuItem onSelect={onNewConversation}>
                 <Plus className="h-4 w-4" />
-                New Conversation
+                {t("newConversation")}
               </ContextMenuItem>
               <ContextMenuSeparator />
             </>
           )}
           <ContextMenuItem onSelect={handleRenameOpen}>
             <Pencil className="h-4 w-4" />
-            Rename
+            {t("rename")}
           </ContextMenuItem>
           <ContextMenuSeparator />
           <ContextMenuSub>
             <ContextMenuSubTrigger>
               <Circle className="h-4 w-4" />
-              Status
+              {t("status")}
             </ContextMenuSubTrigger>
             <ContextMenuSubContent>
               {ALL_STATUSES.filter((s) => s !== conversation.status).map(
@@ -170,7 +178,7 @@ export const SidebarConversationCard = memo(function SidebarConversationCard({
                         STATUS_COLORS[s]
                       )}
                     />
-                    {STATUS_LABELS[s]}
+                    {tStatus(s)}
                   </ContextMenuItem>
                 )
               )}
@@ -182,14 +190,14 @@ export const SidebarConversationCard = memo(function SidebarConversationCard({
             onSelect={() => setDeleteOpen(true)}
           >
             <Trash2 className="h-4 w-4" />
-            Delete
+            {t("delete")}
           </ContextMenuItem>
           {onImport && (
             <>
               <ContextMenuSeparator />
               <ContextMenuItem disabled={importing} onSelect={onImport}>
                 <Download className="h-4 w-4" />
-                {importing ? "Importing..." : "Import local sessions"}
+                {importing ? t("importing") : t("importLocalSessions")}
               </ContextMenuItem>
             </>
           )}
@@ -199,7 +207,7 @@ export const SidebarConversationCard = memo(function SidebarConversationCard({
       <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Rename conversation</DialogTitle>
+            <DialogTitle>{t("renameConversation")}</DialogTitle>
           </DialogHeader>
           <Input
             value={renameValue}
@@ -212,9 +220,9 @@ export const SidebarConversationCard = memo(function SidebarConversationCard({
           />
           <DialogFooter>
             <Button variant="outline" onClick={() => setRenameOpen(false)}>
-              Cancel
+              {t("cancel")}
             </Button>
-            <Button onClick={handleRenameConfirm}>Save</Button>
+            <Button onClick={handleRenameConfirm}>{t("save")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -222,17 +230,17 @@ export const SidebarConversationCard = memo(function SidebarConversationCard({
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete conversation?</AlertDialogTitle>
+            <AlertDialogTitle>{t("deleteConversationTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will delete &ldquo;
-              {conversation.title || "Untitled conversation"}&rdquo;. This
-              action cannot be undone.
+              {t("deleteConversationDescription", {
+                title: conversation.title || t("untitledConversation"),
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm}>
-              Delete
+              {t("delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

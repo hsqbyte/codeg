@@ -2,6 +2,7 @@
 
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Plus, RefreshCw, X } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { useFolderContext } from "@/contexts/folder-context"
 import { useTabContext } from "@/contexts/tab-context"
@@ -41,6 +42,7 @@ const ExistingConversationView = memo(function ExistingConversationView({
   isActive,
   reloadSignal,
 }: ExistingConversationViewProps) {
+  const t = useTranslations("Folder.conversation")
   const { refreshConversations, folder } = useFolderContext()
   const contextKey = `conv-${agentType}-${conversationId}`
 
@@ -193,12 +195,12 @@ const ExistingConversationView = memo(function ExistingConversationView({
     pendingReloadState.current = null
 
     if (detailError) {
-      toast.error(`会话重新加载失败：${detailError}`)
+      toast.error(t("reloadFailed", { message: detailError }))
       return
     }
 
-    toast.success("当前会话已重新加载")
-  }, [detailLoading, detailError])
+    toast.success(t("reloaded"))
+  }, [detailLoading, detailError, t])
 
   return (
     <ConversationShell
@@ -237,6 +239,7 @@ const ExistingConversationView = memo(function ExistingConversationView({
 })
 
 export function ConversationDetailPanel() {
+  const t = useTranslations("Folder.conversation")
   const { folder, newConversation } = useFolderContext()
   const { tabs, activeTabId, openNewConversationTab, closeTab } =
     useTabContext()
@@ -364,14 +367,14 @@ export function ConversationDetailPanel() {
           onSelect={handleReloadActiveConversation}
         >
           <RefreshCw className="h-4 w-4" />
-          重新加载
+          {t("reload")}
         </ContextMenuItem>
         <ContextMenuItem
           disabled={!folder?.path}
           onSelect={handleNewConversation}
         >
           <Plus className="h-4 w-4" />
-          新建会话
+          {t("newConversation")}
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem
@@ -379,7 +382,7 @@ export function ConversationDetailPanel() {
           onSelect={handleCloseActiveTab}
         >
           <X className="h-4 w-4" />
-          关闭会话
+          {t("closeConversation")}
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import dynamic from "next/dynamic"
 import { ChevronDown, ChevronRight, FileCode2, FileIcon } from "lucide-react"
 import type { editor as MonacoEditorNs } from "monaco-editor"
+import { useTranslations } from "next-intl"
 import { useWorkspaceContext } from "@/contexts/workspace-context"
 import { DiffViewer } from "@/components/diff/diff-viewer"
 import { UnifiedDiffPreview } from "@/components/diff/unified-diff-preview"
@@ -490,6 +491,7 @@ function DiffFileList({
   onOpenDiff: (path: string) => Promise<void>
   openFilePreview: (path: string) => Promise<void>
 }) {
+  const t = useTranslations("Folder.fileWorkspacePanel")
   return (
     <div className="h-full flex flex-col min-h-0">
       <div className="border-b border-border bg-muted/25 px-3 py-2 space-y-1">
@@ -499,10 +501,7 @@ function DiffFileList({
               {badge}
             </span>
           )}
-          <span>
-            {diffOutline.files.length}{" "}
-            {diffOutline.files.length === 1 ? "file" : "files"}
-          </span>
+          <span>{t("fileCount", { count: diffOutline.files.length })}</span>
           <span className="font-mono text-green-600 dark:text-green-400">
             +{diffOutline.totalAdditions}
           </span>
@@ -553,14 +552,14 @@ function DiffFileList({
                     void onOpenDiff(file.path)
                   }}
                 >
-                  查看差异
+                  {t("viewDiff")}
                 </ContextMenuItem>
                 <ContextMenuItem
                   onSelect={() => {
                     void openFilePreview(file.path)
                   }}
                 >
-                  打开文件
+                  {t("openFile")}
                 </ContextMenuItem>
               </ContextMenuContent>
             </ContextMenu>
@@ -572,6 +571,7 @@ function DiffFileList({
 }
 
 export function FileWorkspacePanel() {
+  const t = useTranslations("Folder.fileWorkspacePanel")
   const {
     activeFileTab,
     openBranchDiff,
@@ -999,9 +999,7 @@ export function FileWorkspacePanel() {
     return (
       <div className="h-full flex flex-col items-center justify-center text-center px-6">
         <FileCode2 className="h-8 w-8 text-muted-foreground/60 mb-3" />
-        <p className="text-sm text-muted-foreground">
-          Open a file or diff from the right panel
-        </p>
+        <p className="text-sm text-muted-foreground">{t("openFileOrDiff")}</p>
       </div>
     )
   }
@@ -1017,19 +1015,19 @@ export function FileWorkspacePanel() {
     const origLabel = isCommitDiff
       ? `${commitHash}~1`
       : isExternalConflictDiff
-        ? "Disk"
-        : "HEAD"
+        ? t("disk")
+        : t("head")
     const modLabel = isCommitDiff
       ? commitHash
       : isExternalConflictDiff
-        ? "Unsaved"
-        : "Working Tree"
+        ? t("unsaved")
+        : t("workingTree")
 
     return (
       <div className="h-full relative">
         {activeFileTab.loading && (
           <div className="absolute top-2 right-3 z-10 rounded-md bg-background/70 px-2 py-1 text-[11px] text-muted-foreground backdrop-blur-sm">
-            Loading...
+            {t("loading")}
           </div>
         )}
         {!activeFileTab.loading && (
@@ -1055,7 +1053,7 @@ export function FileWorkspacePanel() {
       <div className="h-full relative">
         {activeFileTab.loading && (
           <div className="absolute top-2 right-3 z-10 rounded-md bg-background/70 px-2 py-1 text-[11px] text-muted-foreground backdrop-blur-sm">
-            Loading...
+            {t("loading")}
           </div>
         )}
         <UnifiedDiffPreview
@@ -1074,13 +1072,16 @@ export function FileWorkspacePanel() {
         ? diffListContext.commitHash.slice(0, 7)
         : diffListContext.kind === "branch"
           ? diffListContext.branch
-          : "Working Tree"
+          : t("workingTree")
 
     const description =
       diffListContext.kind === "commit"
         ? diffListContext.commitMessage
         : diffListContext.kind === "branch"
-          ? `${diffListContext.path} · compare with ${diffListContext.branch}`
+          ? t("compareWithBranch", {
+              path: diffListContext.path,
+              branch: diffListContext.branch,
+            })
           : diffListContext.path
 
     const handleOpenDiff = async (path: string) => {
@@ -1101,7 +1102,7 @@ export function FileWorkspacePanel() {
       <div className="h-full relative">
         {activeFileTab.loading && (
           <div className="absolute top-2 right-3 z-10 rounded-md bg-background/70 px-2 py-1 text-[11px] text-muted-foreground backdrop-blur-sm">
-            Loading...
+            {t("loading")}
           </div>
         )}
         {!activeFileTab.loading && (
@@ -1121,17 +1122,14 @@ export function FileWorkspacePanel() {
     <div className="h-full relative">
       {activeFileTab.loading && (
         <div className="absolute top-2 right-3 z-10 rounded-md bg-background/70 px-2 py-1 text-[11px] text-muted-foreground backdrop-blur-sm">
-          Loading...
+          {t("loading")}
         </div>
       )}
       <div className="h-full flex flex-col min-h-0">
         {diffOutline && (
           <div className="border-b border-border bg-muted/25">
             <div className="px-3 py-1.5 text-[11px] text-muted-foreground flex items-center gap-3">
-              <span>
-                {diffOutline.files.length}{" "}
-                {diffOutline.files.length === 1 ? "file" : "files"}
-              </span>
+              <span>{t("fileCount", { count: diffOutline.files.length })}</span>
               <span className="font-mono text-green-600 dark:text-green-400">
                 +{diffOutline.totalAdditions}
               </span>
@@ -1139,7 +1137,7 @@ export function FileWorkspacePanel() {
                 -{diffOutline.totalDeletions}
               </span>
               {diffOutline.totalHunks > 0 && (
-                <span>{diffOutline.totalHunks} hunks</span>
+                <span>{t("hunkCount", { count: diffOutline.totalHunks })}</span>
               )}
               {allHunks.length > 0 && (
                 <div className="ml-auto flex items-center gap-1">
@@ -1150,7 +1148,7 @@ export function FileWorkspacePanel() {
                     className="rounded border border-border bg-background px-2 py-0.5 text-[10px] disabled:opacity-40 hover:bg-muted transition-colors inline-flex items-center gap-1"
                   >
                     <ChevronRight className="h-3 w-3 rotate-180" />
-                    Prev
+                    {t("prev")}
                   </button>
                   <button
                     type="button"
@@ -1161,7 +1159,7 @@ export function FileWorkspacePanel() {
                     }
                     className="rounded border border-border bg-background px-2 py-0.5 text-[10px] disabled:opacity-40 hover:bg-muted transition-colors inline-flex items-center gap-1"
                   >
-                    Next
+                    {t("next")}
                     <ChevronRight className="h-3 w-3" />
                   </button>
                 </div>
@@ -1245,7 +1243,9 @@ export function FileWorkspacePanel() {
                                 type="button"
                                 onClick={() => jumpToLine(hunk.startLine)}
                                 className="shrink-0 rounded border border-border bg-background px-1.5 py-0.5 hover:bg-muted transition-colors"
-                                title={`Jump to line ${hunk.startLine}`}
+                                title={t("jumpToLine", {
+                                  line: hunk.startLine,
+                                })}
                               >
                                 L{hunk.startLine}
                               </button>
@@ -1259,7 +1259,7 @@ export function FileWorkspacePanel() {
               })}
               {diffOutline.files.length === 0 && (
                 <div className="text-[11px] text-muted-foreground px-1 py-0.5">
-                  No parsed diff sections
+                  {t("noParsedDiffSections")}
                 </div>
               )}
             </div>
@@ -1279,7 +1279,7 @@ export function FileWorkspacePanel() {
             theme={editorTheme}
             loading={
               <div className="h-full flex items-center justify-center text-xs text-muted-foreground">
-                Loading editor...
+                {t("loadingEditor")}
               </div>
             }
             options={{

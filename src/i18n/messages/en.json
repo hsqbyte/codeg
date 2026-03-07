@@ -512,5 +512,205 @@
   },
   "SettingsPages": {
     "agentsLoading": "Loading agent settings..."
+  },
+  "Folder": {
+    "common": {
+      "all": "All",
+      "cancel": "Cancel",
+      "close": "Close",
+      "closeOthers": "Close Others",
+      "closeAll": "Close All",
+      "confirm": "Confirm",
+      "save": "Save",
+      "delete": "Delete",
+      "rename": "Rename",
+      "loading": "Loading...",
+      "refresh": "Refresh",
+      "refreshing": "Refreshing...",
+      "create": "Create",
+      "createAndSwitch": "Create and Switch",
+      "openFile": "Open File",
+      "viewDiff": "View Diff"
+    },
+    "modes": {
+      "conversation": "Conversation Mode",
+      "fusion": "Fusion Mode",
+      "files": "Files Mode",
+      "workspaceModesAria": "Workspace modes"
+    },
+    "statusLabels": {
+      "in_progress": "In Progress",
+      "pending_review": "Review",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "sidebar": {
+      "title": "Conversations",
+      "locateActiveConversation": "Locate Active Conversation",
+      "expandAllGroups": "Expand All Groups",
+      "collapseAllGroups": "Collapse All Groups",
+      "newConversation": "New Conversation",
+      "noConversationsFound": "No conversations found.",
+      "importLocalSessions": "Import local sessions",
+      "importing": "Importing...",
+      "error": "Error: {message}",
+      "completeAllSessions": "Complete all sessions",
+      "completeAllReviewTitle": "Complete all review sessions?",
+      "completeAllReviewDescription": "This will mark all {count, plural, one {# session} other {# sessions}} in Review as completed.",
+      "completing": "Completing...",
+      "toasts": {
+        "importedSessions": "Imported {imported, plural, one {# session} other {# sessions}}, skipped {skipped}",
+        "noNewSessionsFound": "No new sessions found (skipped {skipped})",
+        "importFailed": "Import failed: {message}",
+        "reviewCompleted": "Marked {count, plural, one {# review session} other {# review sessions}} as completed",
+        "completeReviewFailed": "Failed to complete review sessions: {message}"
+      }
+    },
+    "conversation": {
+      "reloadFailed": "Failed to reload conversation: {message}",
+      "reloaded": "Conversation reloaded",
+      "reload": "Reload",
+      "newConversation": "New Conversation",
+      "closeConversation": "Close Conversation"
+    },
+    "conversationCard": {
+      "untitledConversation": "Untitled conversation",
+      "newConversation": "New Conversation",
+      "rename": "Rename",
+      "status": "Status",
+      "delete": "Delete",
+      "importLocalSessions": "Import local sessions",
+      "importing": "Importing...",
+      "renameConversation": "Rename conversation",
+      "deleteConversationTitle": "Delete conversation?",
+      "deleteConversationDescription": "This will delete \"{title}\". This action cannot be undone.",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "search": {
+      "dialogTitle": "Search conversations",
+      "placeholder": "Search conversations...",
+      "allAgents": "All",
+      "searching": "Searching...",
+      "typeToSearch": "Type to search conversations",
+      "noResults": "No results found.",
+      "untitledConversation": "Untitled conversation"
+    },
+    "folderTitleBar": {
+      "showSidebar": "Show Sidebar",
+      "hideSidebar": "Hide Sidebar",
+      "toggleTerminal": "Toggle Terminal",
+      "toggleAuxPanel": "Toggle Auxiliary Panel",
+      "search": "Search",
+      "openSettings": "Open Settings",
+      "withShortcut": "{label} ({shortcut})"
+    },
+    "statusBar": {
+      "connection": {
+        "connected": "Connected",
+        "connecting": "Connecting...",
+        "downloading": "Downloading...",
+        "prompting": "Responding...",
+        "error": "Connection error",
+        "disconnected": "Disconnected",
+        "tooltip": "{agent} - {status}",
+        "tooltipError": "{agent} - {error}"
+      },
+      "tasks": {
+        "title": "Tasks"
+      },
+      "alerts": {
+        "title": "Alerts",
+        "empty": "No alerts"
+      },
+      "stats": {
+        "conversations": "{count} conversations",
+        "summary": "{conversations} conversations / {messages} messages"
+      },
+      "tokens": {
+        "contextWindowUsageAria": "Context window usage",
+        "contextWindow": "Context Window",
+        "usedMax": "Used / Max",
+        "tokenUsage": "Token Usage",
+        "input": "Input",
+        "output": "Output",
+        "cacheRead": "Cache Read",
+        "cacheWrite": "Cache Write",
+        "total": "Total"
+      }
+    },
+    "auxPanel": {
+      "tabs": {
+        "diff": "Diff",
+        "files": "Files",
+        "changes": "Changes",
+        "commits": "Commits"
+      }
+    },
+    "windowControls": {
+      "minimizeWindow": "Minimize window",
+      "minimize": "Minimize",
+      "maximizeWindow": "Maximize window",
+      "maximize": "Maximize",
+      "restoreWindow": "Restore window",
+      "restore": "Restore",
+      "closeWindow": "Close window",
+      "close": "Close"
+    },
+    "tabs": {
+      "closeConversationTab": "Close conversation tab",
+      "close": "Close",
+      "closeOthers": "Close Others",
+      "closeAll": "Close All"
+    },
+    "fileWorkspace": {
+      "files": "Files",
+      "closeFileTab": "Close file tab",
+      "close": "Close",
+      "closeOthers": "Close Others",
+      "closeAll": "Close All"
+    },
+    "terminal": {
+      "rename": "Rename",
+      "close": "Close",
+      "closeOthers": "Close Others",
+      "closeAll": "Close All",
+      "hideTerminal": "Hide Terminal ({shortcut})"
+    },
+    "sessionFiles": {
+      "currentResponse": "Current response",
+      "noDiffDataAvailable": "No diff data available for {filePath}",
+      "loading": "Loading...",
+      "noFileChangesInConversation": "No file changes found in this conversation",
+      "openConversationToSeeChanges": "Open a conversation to see its file changes",
+      "remove": "Remove",
+      "changeCount": "{count, plural, one {# change} other {# changes}}",
+      "fileCount": "{count, plural, one {# file} other {# files}}"
+    },
+    "folderNameDropdown": {
+      "fallbackFolderName": "Folder",
+      "openFolder": "Open Folder",
+      "cloneRepository": "Clone Repository",
+      "opened": "Opened",
+      "recentOpen": "Recently Opened"
+    },
+    "fileWorkspacePanel": {
+      "viewDiff": "View Diff",
+      "openFile": "Open File",
+      "fileCount": "{count, plural, one {# file} other {# files}}",
+      "openFileOrDiff": "Open a file or diff from the right panel",
+      "disk": "Disk",
+      "head": "HEAD",
+      "unsaved": "Unsaved",
+      "workingTree": "Working Tree",
+      "loading": "Loading...",
+      "compareWithBranch": "{path} · compare with {branch}",
+      "hunkCount": "{count, plural, one {# hunk} other {# hunks}}",
+      "prev": "Prev",
+      "next": "Next",
+      "jumpToLine": "Jump to line {line}",
+      "noParsedDiffSections": "No parsed diff sections",
+      "loadingEditor": "Loading editor..."
+    }
   }
 }

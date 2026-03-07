@@ -1,6 +1,7 @@
 "use client"
 
 import { Clock } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useTaskContext } from "@/contexts/task-context"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -18,6 +19,7 @@ function Spinner({ className }: { className?: string }) {
 }
 
 export function StatusBarTasks() {
+  const t = useTranslations("Folder.statusBar.tasks")
   const { tasks } = useTaskContext()
 
   if (tasks.length === 0) return null
@@ -45,7 +47,7 @@ export function StatusBarTasks() {
           </button>
         </PopoverTrigger>
         <PopoverContent side="top" align="end" className="w-72 p-3">
-          <div className="text-xs font-medium mb-2">任务</div>
+          <div className="text-xs font-medium mb-2">{t("title")}</div>
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {tasks.map((task) => (
               <div key={task.id} className="space-y-1">

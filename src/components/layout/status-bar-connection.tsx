@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useSyncExternalStore } from "react"
 import { Unplug } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useConnectionStore } from "@/contexts/acp-connections-context"
 import { useTabContext } from "@/contexts/tab-context"
 import { useFolderContext } from "@/contexts/folder-context"
@@ -15,24 +16,35 @@ import {
 import { AGENT_LABELS } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
-const STATUS_STYLE: Record<string, { className: string; title: string }> = {
-  connected: { className: "opacity-100", title: "Connected" },
+type ConnectionStatusLabelKey =
+  | "connected"
+  | "connecting"
+  | "downloading"
+  | "prompting"
+  | "error"
+
+const STATUS_STYLE: Record<
+  string,
+  { className: string; labelKey: ConnectionStatusLabelKey }
+> = {
+  connected: { className: "opacity-100", labelKey: "connected" },
   connecting: {
     className: "opacity-100 animate-pulse",
-    title: "Connecting...",
+    labelKey: "connecting",
   },
   downloading: {
     className: "opacity-100 animate-pulse",
-    title: "Downloading...",
+    labelKey: "downloading",
   },
   prompting: {
     className: "opacity-100 animate-pulse",
-    title: "Responding...",
+    labelKey: "prompting",
   },
-  error: { className: "opacity-50", title: "Connection error" },
+  error: { className: "opacity-50", labelKey: "error" },
 }
 
 export function StatusBarConnection() {
+  const t = useTranslations("Folder.statusBar.connection")
   const store = useConnectionStore()
   const { tabs, activeTabId } = useTabContext()
   const { conversations } = useFolderContext()
@@ -89,7 +101,7 @@ export function StatusBarConnection() {
               {model && <span>{model}</span>}
             </div>
           </TooltipTrigger>
-          <TooltipContent side="top">Disconnected</TooltipContent>
+          <TooltipContent side="top">{t("disconnected")}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
     )
@@ -99,10 +111,11 @@ export function StatusBarConnection() {
   if (!style) return null
 
   const label = AGENT_LABELS[agentType]
+  const statusLabel = t(style.labelKey)
   const tooltipText =
     status === "error" && activeConn?.error
-      ? `${label} - ${activeConn.error}`
-      : `${label} - ${style.title}`
+      ? t("tooltipError", { agent: label, error: activeConn.error })
+      : t("tooltip", { agent: label, status: statusLabel })
 
   return (
     <TooltipProvider>

@@ -8,6 +8,7 @@ import {
   useState,
   type Ref,
 } from "react"
+import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { CheckCheck, ChevronRight, Download, Loader2, Plus } from "lucide-react"
 import { useFolderContext } from "@/contexts/folder-context"
@@ -20,7 +21,7 @@ import {
   deleteConversation,
 } from "@/lib/tauri"
 import type { ConversationStatus, DbConversationSummary } from "@/lib/types"
-import { STATUS_ORDER, STATUS_LABELS, STATUS_COLORS } from "@/lib/types"
+import { STATUS_ORDER, STATUS_COLORS } from "@/lib/types"
 import { SidebarConversationCard } from "./sidebar-conversation-card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -79,6 +80,9 @@ export function SidebarConversationList({
 }: {
   ref?: Ref<SidebarConversationListHandle>
 }) {
+  const t = useTranslations("Folder.sidebar")
+  const tStatus = useTranslations("Folder.statusLabels")
+  const tCommon = useTranslations("Folder.common")
   const {
     folder,
     conversations,
@@ -225,7 +229,7 @@ export function SidebarConversationList({
     if (importing) return
     setImporting(true)
     const taskId = `import-${folderId}-${Date.now()}`
-    addTask(taskId, "Importing local sessions")
+    addTask(taskId, t("importLocalSessions"))
     updateTask(taskId, { status: "running" })
     try {
       const result = await importLocalConversations(folderId)
@@ -233,19 +237,22 @@ export function SidebarConversationList({
       refreshConversations()
       if (result.imported > 0) {
         toast.success(
-          `Imported ${result.imported} session(s), skipped ${result.skipped}`
+          t("toasts.importedSessions", {
+            imported: result.imported,
+            skipped: result.skipped,
+          })
         )
       } else {
-        toast.info(`No new sessions found (skipped ${result.skipped})`)
+        toast.info(t("toasts.noNewSessionsFound", { skipped: result.skipped }))
       }
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e)
       updateTask(taskId, { status: "failed", error: msg })
-      toast.error(`Import failed: ${msg}`)
+      toast.error(t("toasts.importFailed", { message: msg }))
     } finally {
       setImporting(false)
     }
-  }, [importing, folderId, addTask, updateTask, refreshConversations])
+  }, [importing, folderId, addTask, updateTask, refreshConversations, t])
 
   const handleCompleteAllReview = useCallback(async () => {
     if (completingReview || reviewConversationCount === 0) return
@@ -258,12 +265,12 @@ export function SidebarConversationList({
       )
       refreshConversations()
       toast.success(
-        `Marked ${reviewConversationCount} review session(s) as completed`
+        t("toasts.reviewCompleted", { count: reviewConversationCount })
       )
       setCompleteReviewOpen(false)
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e)
-      toast.error(`Failed to complete review sessions: ${msg}`)
+      toast.error(t("toasts.completeReviewFailed", { message: msg }))
     } finally {
       setCompletingReview(false)
     }
@@ -272,6 +279,7 @@ export function SidebarConversationList({
     reviewConversationCount,
     reviewConversations,
     refreshConversations,
+    t,
   ])
 
   return (
@@ -290,14 +298,16 @@ export function SidebarConversationList({
         </div>
       ) : error ? (
         <div className="flex-1 flex items-center justify-center px-3">
-          <p className="text-destructive text-xs">Error: {error}</p>
+          <p className="text-destructive text-xs">
+            {t("error", { message: error })}
+          </p>
         </div>
       ) : conversations.length === 0 ? (
         <ContextMenu>
           <ContextMenuTrigger asChild>
             <div className="flex-1 flex flex-col items-center justify-center px-3 gap-3">
               <p className="text-muted-foreground text-xs text-center">
-                No conversations found.
+                {t("noConversationsFound")}
               </p>
               <Button
                 variant="outline"
@@ -310,19 +320,19 @@ export function SidebarConversationList({
                 ) : (
                   <Download className="h-3.5 w-3.5 mr-1.5" />
                 )}
-                {importing ? "Importing..." : "Import local sessions"}
+                {importing ? t("importing") : t("importLocalSessions")}
               </Button>
             </div>
           </ContextMenuTrigger>
           <ContextMenuContent>
             <ContextMenuItem onSelect={handleNewConversation}>
               <Plus className="h-4 w-4" />
-              New Conversation
+              {t("newConversation")}
             </ContextMenuItem>
             <ContextMenuSeparator />
             <ContextMenuItem disabled={importing} onSelect={handleImport}>
               <Download className="h-4 w-4" />
-              {importing ? "Importing..." : "Import local sessions"}
+              {importing ? t("importing") : t("importLocalSessions")}
             </ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
@@ -356,7 +366,7 @@ export function SidebarConversationList({
                         STATUS_COLORS[status]
                       )}
                     />
-                    <span>{STATUS_LABELS[status]}</span>
+                    <span>{tStatus(status)}</span>
                     <span className="ml-auto text-muted-foreground/60 tabular-nums">
                       {items.length}
                     </span>
@@ -381,7 +391,7 @@ export function SidebarConversationList({
                             onSelect={() => setCompleteReviewOpen(true)}
                           >
                             <CheckCheck className="h-4 w-4" />
-                            Complete all sessions
+                            {t("completeAllSessions")}
                           </ContextMenuItem>
                         </ContextMenuContent>
                       </ContextMenu>
@@ -421,12 +431,12 @@ export function SidebarConversationList({
           <ContextMenuContent>
             <ContextMenuItem onSelect={handleNewConversation}>
               <Plus className="h-4 w-4" />
-              New Conversation
+              {t("newConversation")}
             </ContextMenuItem>
             <ContextMenuSeparator />
             <ContextMenuItem disabled={importing} onSelect={handleImport}>
               <Download className="h-4 w-4" />
-              {importing ? "Importing..." : "Import local sessions"}
+              {importing ? t("importing") : t("importLocalSessions")}
             </ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
@@ -439,21 +449,22 @@ export function SidebarConversationList({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Complete all review sessions?</AlertDialogTitle>
+            <AlertDialogTitle>{t("completeAllReviewTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will mark all {reviewConversationCount} session(s) in Review
-              as completed.
+              {t("completeAllReviewDescription", {
+                count: reviewConversationCount,
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={completingReview}>
-              Cancel
+              {tCommon("cancel")}
             </AlertDialogCancel>
             <AlertDialogAction
               disabled={completingReview || reviewConversationCount === 0}
               onClick={handleCompleteAllReview}
             >
-              {completingReview ? "Completing..." : "Confirm"}
+              {completingReview ? t("completing") : tCommon("confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react"
 import { FileDiff, Folder, FolderPen, GitCommit } from "lucide-react"
+import { useTranslations } from "next-intl"
 import {
   useAuxPanelContext,
   type AuxPanelTab,
@@ -13,6 +14,7 @@ import { GitLogTab } from "./aux-panel-git-log-tab"
 import { SessionFilesTab } from "./aux-panel-session-files-tab"
 
 export function AuxPanel() {
+  const t = useTranslations("Folder.auxPanel.tabs")
   const { isOpen, activeTab, setActiveTab } = useAuxPanelContext()
   const [hasMountedFileTree, setHasMountedFileTree] = useState(
     activeTab === "file_tree"
@@ -54,16 +56,32 @@ export function AuxPanel() {
           variant="line"
           className="h-10 w-full shrink-0 justify-start border-b border-border px-3 group-data-horizontal/tabs:h-10"
         >
-          <TabsTrigger value="session_files" title="Diff" aria-label="Diff">
+          <TabsTrigger
+            value="session_files"
+            title={t("diff")}
+            aria-label={t("diff")}
+          >
             <FileDiff className="h-3.5 w-3.5" />
           </TabsTrigger>
-          <TabsTrigger value="file_tree" title="Files" aria-label="Files">
+          <TabsTrigger
+            value="file_tree"
+            title={t("files")}
+            aria-label={t("files")}
+          >
             <Folder className="h-3.5 w-3.5" />
           </TabsTrigger>
-          <TabsTrigger value="changes" title="Changes" aria-label="Changes">
+          <TabsTrigger
+            value="changes"
+            title={t("changes")}
+            aria-label={t("changes")}
+          >
             <FolderPen className="h-3.5 w-3.5" />
           </TabsTrigger>
-          <TabsTrigger value="git_log" title="Commits" aria-label="Commits">
+          <TabsTrigger
+            value="git_log"
+            title={t("commits")}
+            aria-label={t("commits")}
+          >
             <GitCommit className="h-3.5 w-3.5" />
           </TabsTrigger>
         </TabsList>

@@ -3,6 +3,7 @@
 import { memo, useCallback, useRef } from "react"
 import { Reorder } from "motion/react"
 import { X } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
 import { STATUS_COLORS } from "@/lib/types"
 import type { ConversationStatus } from "@/lib/types"
@@ -34,6 +35,7 @@ export const TabItem = memo(function TabItem({
   onCloseAll,
   onPin,
 }: TabItemProps) {
+  const t = useTranslations("Folder.tabs")
   const isDragging = useRef(false)
   const itemRef = useRef<HTMLDivElement>(null)
 
@@ -129,19 +131,21 @@ export const TabItem = memo(function TabItem({
                 event.stopPropagation()
                 handleClose()
               }}
-              aria-label="Close conversation tab"
+              aria-label={t("closeConversationTab")}
             >
               <X className="h-3 w-3" />
             </button>
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent>
-          <ContextMenuItem onSelect={handleClose}>关闭</ContextMenuItem>
+          <ContextMenuItem onSelect={handleClose}>{t("close")}</ContextMenuItem>
           <ContextMenuItem onSelect={handleCloseOthers}>
-            关闭其它
+            {t("closeOthers")}
           </ContextMenuItem>
           <ContextMenuSeparator />
-          <ContextMenuItem onSelect={onCloseAll}>关闭所有</ContextMenuItem>
+          <ContextMenuItem onSelect={onCloseAll}>
+            {t("closeAll")}
+          </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
     </Reorder.Item>

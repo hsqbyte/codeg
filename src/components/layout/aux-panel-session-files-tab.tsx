@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import { ChevronRight, FileIcon } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useFolderContext } from "@/contexts/folder-context"
 import { useTabContext } from "@/contexts/tab-context"
 import type { LiveMessage } from "@/contexts/acp-connections-context"
@@ -77,8 +78,15 @@ function mergeLiveTurns(params: {
   liveMessage: LiveMessage | null
   connStatus: ConnectionStatus | null
   pendingPromptText: string | null
+  fallbackPromptText: string
 }): MessageTurn[] {
-  const { turns, liveMessage, connStatus, pendingPromptText } = params
+  const {
+    turns,
+    liveMessage,
+    connStatus,
+    pendingPromptText,
+    fallbackPromptText,
+  } = params
   if (!liveMessage || connStatus !== "prompting") return turns
 
   const liveBlocks = liveMessage.content.flatMap((block) => {
@@ -118,7 +126,7 @@ function mergeLiveTurns(params: {
       id: `live-user-${liveMessage.id}`,
       role: "user",
       blocks: [
-        { type: "text", text: pendingPromptText?.trim() || "Current response" },
+        { type: "text", text: pendingPromptText?.trim() || fallbackPromptText },
       ],
       timestamp: now,
     })
@@ -145,6 +153,7 @@ function SessionFilesContent({
   connStatus: ConnectionStatus | null
   pendingPromptText: string | null
 }) {
+  const t = useTranslations("Folder.sessionFiles")
   const { detail, loading, refetch } = useDbMessageDetail(conversationId)
   const { openSessionFileDiff } = useWorkspaceContext()
   const { folder } = useFolderContext()
@@ -166,8 +175,9 @@ function SessionFilesContent({
         liveMessage,
         connStatus,
         pendingPromptText,
+        fallbackPromptText: t("currentResponse"),
       }),
-    [detail?.turns, liveMessage, connStatus, pendingPromptText]
+    [detail?.turns, liveMessage, connStatus, pendingPromptText, t]
   )
   const groups = useMemo(
     () => (turns.length > 0 ? extractSessionFilesGrouped(turns) : []),
@@ -182,7 +192,7 @@ function SessionFilesContent({
   ) => {
     openSessionFileDiff(
       filePath,
-      diffContent ?? `No diff data available for ${filePath}`,
+      diffContent ?? t("noDiffDataAvailable", { filePath }),
       `msg-${groupIndex + 1}-chg-${changeIndex + 1}`
     )
   }
@@ -190,7 +200,9 @@ function SessionFilesContent({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full p-4">
-        <p className="text-xs text-muted-foreground text-center">Loading...</p>
+        <p className="text-xs text-muted-foreground text-center">
+          {t("loading")}
+        </p>
       </div>
     )
   }
@@ -199,7 +211,7 @@ function SessionFilesContent({
     return (
       <div className="flex items-center justify-center h-full p-4">
         <p className="text-xs text-muted-foreground text-center">
-          No file changes found in this conversation
+          {t("noFileChangesInConversation")}
         </p>
       </div>
     )
@@ -258,12 +270,10 @@ function SessionFilesContent({
                   </p>
                   <div className="mt-2 flex flex-wrap items-center gap-1.5">
                     <span className="rounded-md border border-border bg-muted/40 px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                      {group.files.length}{" "}
-                      {group.files.length === 1 ? "change" : "changes"}
+                      {t("changeCount", { count: group.files.length })}
                     </span>
                     <span className="rounded-md border border-border bg-muted/40 px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                      {uniqueFileCount}{" "}
-                      {uniqueFileCount === 1 ? "File" : "Files"}
+                      {t("fileCount", { count: uniqueFileCount })}
                     </span>
                     <span className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/40 px-1.5 py-0.5 font-mono text-[10px] text-foreground">
                       <CommitFileAdditions
@@ -338,7 +348,7 @@ function SessionFilesContent({
                         </p>
                         {isRemoved ? (
                           <span className="inline-flex shrink-0 items-center rounded-md border border-destructive/30 bg-destructive/10 px-1.5 py-0.5 font-mono text-[10px] text-destructive">
-                            Remove
+                            {t("remove")}
                           </span>
                         ) : (
                           <span className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border bg-muted/40 px-1.5 py-0.5 font-mono text-[10px] text-foreground">
@@ -366,6 +376,7 @@ function SessionFilesContent({
 }
 
 export function SessionFilesTab() {
+  const t = useTranslations("Folder.sessionFiles")
   const { tabs, activeTabId } = useTabContext()
 
   const activeTab = tabs.find((t) => t.id === activeTabId)
@@ -378,7 +389,7 @@ export function SessionFilesTab() {
     return (
       <div className="flex items-center justify-center h-full p-4">
         <p className="text-xs text-muted-foreground text-center">
-          Open a conversation to see its file changes
+          {t("openConversationToSeeChanges")}
         </p>
       </div>
     )
@@ -388,7 +399,7 @@ export function SessionFilesTab() {
     return (
       <div className="flex items-center justify-center h-full p-4">
         <p className="text-xs text-muted-foreground text-center">
-          No file changes found in this conversation
+          {t("noFileChangesInConversation")}
         </p>
       </div>
     )

@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react"
 import { getCurrentWindow } from "@tauri-apps/api/window"
+import { useTranslations } from "next-intl"
 import { usePlatform } from "@/hooks/use-platform"
 import { cn } from "@/lib/utils"
 
 export function WindowControls() {
+  const t = useTranslations("Folder.windowControls")
   const { isWindows } = usePlatform()
   const [isMaximized, setIsMaximized] = useState(false)
 
@@ -75,8 +77,8 @@ export function WindowControls() {
             console.error("[WindowControls] failed to minimize:", err)
           })
         }}
-        aria-label="Minimize window"
-        title="Minimize"
+        aria-label={t("minimizeWindow")}
+        title={t("minimize")}
       >
         <MinimizeIcon />
       </button>
@@ -88,8 +90,8 @@ export function WindowControls() {
             console.error("[WindowControls] failed to toggle maximize:", err)
           })
         }}
-        aria-label={isMaximized ? "Restore window" : "Maximize window"}
-        title={isMaximized ? "Restore" : "Maximize"}
+        aria-label={t(isMaximized ? "restoreWindow" : "maximizeWindow")}
+        title={t(isMaximized ? "restore" : "maximize")}
       >
         {isMaximized ? <RestoreIcon /> : <MaximizeIcon />}
       </button>
@@ -104,8 +106,8 @@ export function WindowControls() {
             console.error("[WindowControls] failed to close:", err)
           })
         }}
-        aria-label="Close window"
-        title="Close"
+        aria-label={t("closeWindow")}
+        title={t("close")}
       >
         <CloseIcon />
       </button>

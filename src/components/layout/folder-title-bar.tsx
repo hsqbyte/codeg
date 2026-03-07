@@ -18,6 +18,7 @@ import {
   Search,
   Settings,
 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { getGitBranch, openFolderWindow, openSettingsWindow } from "@/lib/tauri"
 import { useFolderContext } from "@/contexts/folder-context"
 import { Button } from "@/components/ui/button"
@@ -41,22 +42,24 @@ import { SearchCommandDialog } from "@/components/conversations/search-command-d
 const MODE_TABS = [
   {
     mode: "conversation",
-    title: "会话模式",
+    titleKey: "conversation",
     icon: MessageSquare,
   },
   {
     mode: "fusion",
-    title: "融合模式",
+    titleKey: "fusion",
     icon: Columns2,
   },
   {
     mode: "files",
-    title: "文件模式",
+    titleKey: "files",
     icon: FileCode2,
   },
 ] as const
 
 export function FolderTitleBar() {
+  const tModes = useTranslations("Folder.modes")
+  const tTitleBar = useTranslations("Folder.folderTitleBar")
   const { folder } = useFolderContext()
   const { isOpen, toggle } = useSidebarContext()
   const { isOpen: auxPanelOpen, toggle: toggleAuxPanel } = useAuxPanelContext()
@@ -212,7 +215,7 @@ export function FolderTitleBar() {
         center={
           <div
             role="tablist"
-            aria-label="工作区模式"
+            aria-label={tModes("workspaceModesAria")}
             className="relative flex h-[27px] items-center rounded-full border border-border/80 bg-background/80 p-0.5"
           >
             <div
@@ -222,6 +225,7 @@ export function FolderTitleBar() {
             {MODE_TABS.map((item) => {
               const Icon = item.icon
               const isActive = mode === item.mode
+              const title = tModes(item.titleKey)
               return (
                 <div
                   key={item.mode}
@@ -235,8 +239,8 @@ export function FolderTitleBar() {
                   onClick={() => setMode(item.mode)}
                   onKeyDown={(event) => handleModeKeyDown(event, item.mode)}
                   onMouseDown={(event) => event.preventDefault()}
-                  title={item.title}
-                  aria-label={item.title}
+                  title={title}
+                  aria-label={title}
                   aria-selected={isActive}
                 >
                   <Icon
@@ -259,7 +263,13 @@ export function FolderTitleBar() {
                 size="icon"
                 className="h-6 w-6 hover:text-foreground/80"
                 onClick={toggle}
-                title={`${isOpen ? "Hide Sidebar" : "Show Sidebar"} (${formatShortcutLabel(shortcuts.toggle_sidebar, isMac)})`}
+                title={tTitleBar("withShortcut", {
+                  label: tTitleBar(isOpen ? "hideSidebar" : "showSidebar"),
+                  shortcut: formatShortcutLabel(
+                    shortcuts.toggle_sidebar,
+                    isMac
+                  ),
+                })}
               >
                 <PanelLeft className="h-3.5 w-3.5" />
               </Button>
@@ -268,7 +278,13 @@ export function FolderTitleBar() {
                 size="icon"
                 className={`h-6 w-6 hover:text-foreground/80 ${terminalOpen ? "bg-accent" : ""}`}
                 onClick={() => toggleTerminal()}
-                title={`Toggle Terminal (${formatShortcutLabel(shortcuts.toggle_terminal, isMac)})`}
+                title={tTitleBar("withShortcut", {
+                  label: tTitleBar("toggleTerminal"),
+                  shortcut: formatShortcutLabel(
+                    shortcuts.toggle_terminal,
+                    isMac
+                  ),
+                })}
               >
                 <PanelBottom className="h-3.5 w-3.5" />
               </Button>
@@ -277,7 +293,13 @@ export function FolderTitleBar() {
                 size="icon"
                 className={`h-6 w-6 hover:text-foreground/80 ${auxPanelOpen ? "bg-accent" : ""}`}
                 onClick={toggleAuxPanel}
-                title={`Toggle Auxiliary Panel (${formatShortcutLabel(shortcuts.toggle_aux_panel, isMac)})`}
+                title={tTitleBar("withShortcut", {
+                  label: tTitleBar("toggleAuxPanel"),
+                  shortcut: formatShortcutLabel(
+                    shortcuts.toggle_aux_panel,
+                    isMac
+                  ),
+                })}
               >
                 <PanelRight className="h-3.5 w-3.5" />
               </Button>
@@ -286,7 +308,10 @@ export function FolderTitleBar() {
                 size="icon"
                 className="h-6 w-6 hover:text-foreground/80"
                 onClick={() => setSearchOpen(true)}
-                title={`Search (${formatShortcutLabel(shortcuts.toggle_search, isMac)})`}
+                title={tTitleBar("withShortcut", {
+                  label: tTitleBar("search"),
+                  shortcut: formatShortcutLabel(shortcuts.toggle_search, isMac),
+                })}
               >
                 <Search className="h-3.5 w-3.5" />
               </Button>
@@ -295,7 +320,10 @@ export function FolderTitleBar() {
                 size="icon"
                 className="h-6 w-6 hover:text-foreground/80"
                 onClick={handleOpenSettings}
-                title={`Open Settings (${formatShortcutLabel(shortcuts.open_settings, isMac)})`}
+                title={tTitleBar("withShortcut", {
+                  label: tTitleBar("openSettings"),
+                  shortcut: formatShortcutLabel(shortcuts.open_settings, isMac),
+                })}
               >
                 <Settings className="h-3.5 w-3.5" />
               </Button>

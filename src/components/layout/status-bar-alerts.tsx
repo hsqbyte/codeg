@@ -1,6 +1,7 @@
 "use client"
 
 import { CircleAlert, X, Trash2 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import {
   useAlertContext,
   type AlertLevel,
@@ -110,6 +111,7 @@ function AlertActionButton({ action }: { action: AlertAction }) {
 }
 
 export function StatusBarAlerts() {
+  const t = useTranslations("Folder.statusBar.alerts")
   const { alerts, hasAlerts, dismissAlert, clearAll } = useAlertContext()
 
   return (
@@ -124,7 +126,7 @@ export function StatusBarAlerts() {
       </PopoverTrigger>
       <PopoverContent side="top" align="end" className="w-80 p-3">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-medium">告警</span>
+          <span className="text-xs font-medium">{t("title")}</span>
           {hasAlerts && (
             <button
               onClick={clearAll}
@@ -135,7 +137,7 @@ export function StatusBarAlerts() {
           )}
         </div>
         {!hasAlerts ? (
-          <div className="text-xs text-muted-foreground py-2">暂无告警信息</div>
+          <div className="text-xs text-muted-foreground py-2">{t("empty")}</div>
         ) : (
           <div className="space-y-2 max-h-56 overflow-y-auto">
             {alerts.map((alert) => (

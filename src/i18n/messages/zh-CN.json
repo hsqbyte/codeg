@@ -512,5 +512,205 @@
   },
   "SettingsPages": {
     "agentsLoading": "加载 Agent 设置中..."
+  },
+  "Folder": {
+    "common": {
+      "all": "全部",
+      "cancel": "取消",
+      "close": "关闭",
+      "closeOthers": "关闭其它",
+      "closeAll": "关闭所有",
+      "confirm": "确认",
+      "save": "保存",
+      "delete": "删除",
+      "rename": "重命名",
+      "loading": "加载中...",
+      "refresh": "刷新",
+      "refreshing": "刷新中...",
+      "create": "创建",
+      "createAndSwitch": "创建并切换",
+      "openFile": "打开文件",
+      "viewDiff": "查看差异"
+    },
+    "modes": {
+      "conversation": "会话模式",
+      "fusion": "融合模式",
+      "files": "文件模式",
+      "workspaceModesAria": "工作区模式"
+    },
+    "statusLabels": {
+      "in_progress": "进行中",
+      "pending_review": "待复查",
+      "completed": "已完成",
+      "cancelled": "已取消"
+    },
+    "sidebar": {
+      "title": "会话",
+      "locateActiveConversation": "定位当前会话",
+      "expandAllGroups": "展开全部分组",
+      "collapseAllGroups": "折叠全部分组",
+      "newConversation": "新建会话",
+      "noConversationsFound": "未找到会话。",
+      "importLocalSessions": "导入本地会话",
+      "importing": "导入中...",
+      "error": "错误：{message}",
+      "completeAllSessions": "完成全部会话",
+      "completeAllReviewTitle": "完成全部复查会话？",
+      "completeAllReviewDescription": "这会将复查中的 {count} 个会话全部标记为已完成。",
+      "completing": "处理中...",
+      "toasts": {
+        "importedSessions": "已导入 {imported} 个会话，跳过 {skipped} 个",
+        "noNewSessionsFound": "没有新会话（已跳过 {skipped} 个）",
+        "importFailed": "导入失败：{message}",
+        "reviewCompleted": "已将 {count} 个复查会话标记为已完成",
+        "completeReviewFailed": "批量完成复查会话失败：{message}"
+      }
+    },
+    "conversation": {
+      "reloadFailed": "会话重新加载失败：{message}",
+      "reloaded": "当前会话已重新加载",
+      "reload": "重新加载",
+      "newConversation": "新建会话",
+      "closeConversation": "关闭会话"
+    },
+    "conversationCard": {
+      "untitledConversation": "未命名会话",
+      "newConversation": "新建会话",
+      "rename": "重命名",
+      "status": "状态",
+      "delete": "删除",
+      "importLocalSessions": "导入本地会话",
+      "importing": "导入中...",
+      "renameConversation": "重命名会话",
+      "deleteConversationTitle": "删除会话？",
+      "deleteConversationDescription": "会删除“{title}”，此操作不可撤销。",
+      "cancel": "取消",
+      "save": "保存"
+    },
+    "search": {
+      "dialogTitle": "搜索会话",
+      "placeholder": "搜索会话...",
+      "allAgents": "全部",
+      "searching": "搜索中...",
+      "typeToSearch": "输入关键词搜索会话",
+      "noResults": "未找到结果。",
+      "untitledConversation": "未命名会话"
+    },
+    "folderTitleBar": {
+      "showSidebar": "显示侧边栏",
+      "hideSidebar": "隐藏侧边栏",
+      "toggleTerminal": "切换终端",
+      "toggleAuxPanel": "切换辅助面板",
+      "search": "搜索",
+      "openSettings": "打开设置",
+      "withShortcut": "{label}（{shortcut}）"
+    },
+    "statusBar": {
+      "connection": {
+        "connected": "已连接",
+        "connecting": "连接中...",
+        "downloading": "下载中...",
+        "prompting": "响应中...",
+        "error": "连接异常",
+        "disconnected": "未连接",
+        "tooltip": "{agent} - {status}",
+        "tooltipError": "{agent} - {error}"
+      },
+      "tasks": {
+        "title": "任务"
+      },
+      "alerts": {
+        "title": "告警",
+        "empty": "暂无告警信息"
+      },
+      "stats": {
+        "conversations": "{count} 个会话",
+        "summary": "{conversations} 个会话 / {messages} 条消息"
+      },
+      "tokens": {
+        "contextWindowUsageAria": "上下文窗口使用率",
+        "contextWindow": "上下文窗口",
+        "usedMax": "已用 / 上限",
+        "tokenUsage": "Token 用量",
+        "input": "输入",
+        "output": "输出",
+        "cacheRead": "缓存读取",
+        "cacheWrite": "缓存写入",
+        "total": "总计"
+      }
+    },
+    "auxPanel": {
+      "tabs": {
+        "diff": "Diff",
+        "files": "Files",
+        "changes": "Changes",
+        "commits": "Commits"
+      }
+    },
+    "windowControls": {
+      "minimizeWindow": "最小化窗口",
+      "minimize": "最小化",
+      "maximizeWindow": "最大化窗口",
+      "maximize": "最大化",
+      "restoreWindow": "还原窗口",
+      "restore": "还原",
+      "closeWindow": "关闭窗口",
+      "close": "关闭"
+    },
+    "tabs": {
+      "closeConversationTab": "关闭会话标签",
+      "close": "关闭",
+      "closeOthers": "关闭其它",
+      "closeAll": "关闭所有"
+    },
+    "fileWorkspace": {
+      "files": "文件",
+      "closeFileTab": "关闭文件标签",
+      "close": "关闭",
+      "closeOthers": "关闭其它",
+      "closeAll": "关闭所有"
+    },
+    "terminal": {
+      "rename": "重命名",
+      "close": "关闭",
+      "closeOthers": "关闭其它",
+      "closeAll": "关闭所有",
+      "hideTerminal": "隐藏终端（{shortcut}）"
+    },
+    "sessionFiles": {
+      "currentResponse": "当前响应",
+      "noDiffDataAvailable": "未找到 {filePath} 的差异数据",
+      "loading": "加载中...",
+      "noFileChangesInConversation": "该会话未发现文件变更",
+      "openConversationToSeeChanges": "打开会话以查看文件变更",
+      "remove": "移除",
+      "changeCount": "{count} 处变更",
+      "fileCount": "{count} 个文件"
+    },
+    "folderNameDropdown": {
+      "fallbackFolderName": "文件夹",
+      "openFolder": "打开文件夹",
+      "cloneRepository": "克隆仓库",
+      "opened": "已打开",
+      "recentOpen": "最近打开"
+    },
+    "fileWorkspacePanel": {
+      "viewDiff": "查看差异",
+      "openFile": "打开文件",
+      "fileCount": "{count} 个文件",
+      "openFileOrDiff": "从右侧面板打开文件或差异",
+      "disk": "磁盘",
+      "head": "HEAD",
+      "unsaved": "未保存",
+      "workingTree": "工作区",
+      "loading": "加载中...",
+      "compareWithBranch": "{path} · 与 {branch} 比较",
+      "hunkCount": "{count} 个区块",
+      "prev": "上一个",
+      "next": "下一个",
+      "jumpToLine": "跳转到第 {line} 行",
+      "noParsedDiffSections": "未解析到差异区块",
+      "loadingEditor": "编辑器加载中..."
+    }
   }
 }

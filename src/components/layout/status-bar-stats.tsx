@@ -2,6 +2,7 @@
 
 import { useMemo } from "react"
 import { BarChart3 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useFolderContext } from "@/contexts/folder-context"
 import { AGENT_LABELS } from "@/lib/types"
 import { AgentIcon } from "@/components/agent-icon"
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/popover"
 
 export function StatusBarStats() {
+  const t = useTranslations("Folder.statusBar.stats")
   const { stats } = useFolderContext()
 
   const activeAgents = useMemo(
@@ -26,7 +28,9 @@ export function StatusBarStats() {
       <PopoverTrigger asChild>
         <button className="flex items-center gap-1.5 hover:text-foreground transition-colors">
           <BarChart3 className="h-3 w-3" />
-          <span>{stats.total_conversations} conversations</span>
+          <span>
+            {t("conversations", { count: stats.total_conversations })}
+          </span>
           <span className="flex items-center gap-1 ml-1">
             {activeAgents.map((a) => (
               <AgentIcon
@@ -40,8 +44,10 @@ export function StatusBarStats() {
       </PopoverTrigger>
       <PopoverContent side="top" align="start" className="w-64 p-3">
         <div className="text-xs font-medium mb-2">
-          {stats.total_conversations} conversations / {stats.total_messages}{" "}
-          messages
+          {t("summary", {
+            conversations: stats.total_conversations,
+            messages: stats.total_messages,
+          })}
         </div>
         <div className="space-y-1.5">
           {activeAgents.map((a) => (

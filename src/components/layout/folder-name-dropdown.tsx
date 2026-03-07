@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { ChevronDown, Folder, FolderOpen, GitBranch } from "lucide-react"
 import { open } from "@tauri-apps/plugin-dialog"
+import { useTranslations } from "next-intl"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,13 +23,14 @@ import { CloneDialog } from "@/components/welcome/clone-dialog"
 import type { FolderHistoryEntry } from "@/lib/types"
 
 export function FolderNameDropdown() {
+  const t = useTranslations("Folder.folderNameDropdown")
   const { folder } = useFolderContext()
   const [openFolders, setOpenFolders] = useState<FolderHistoryEntry[]>([])
   const [history, setHistory] = useState<FolderHistoryEntry[]>([])
   const [cloneOpen, setCloneOpen] = useState(false)
 
   const folderPath = folder?.path ?? ""
-  const folderName = folder?.name ?? "文件夹"
+  const folderName = folder?.name ?? t("fallbackFolderName")
 
   async function handleOpenChange(open: boolean) {
     if (open) {
@@ -77,16 +79,16 @@ export function FolderNameDropdown() {
         <DropdownMenuContent className="min-w-64" align="start">
           <DropdownMenuItem onSelect={handleOpenFolder}>
             <FolderOpen className="h-3.5 w-3.5 shrink-0" />
-            Open Folder
+            {t("openFolder")}
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setCloneOpen(true)}>
             <GitBranch className="h-3.5 w-3.5 shrink-0" />
-            Clone Repository
+            {t("cloneRepository")}
           </DropdownMenuItem>
           {openFolders.length > 0 && (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuLabel>已打开</DropdownMenuLabel>
+              <DropdownMenuLabel>{t("opened")}</DropdownMenuLabel>
               {openFolders.map((entry) => (
                 <DropdownMenuItem
                   key={entry.path}
@@ -114,7 +116,7 @@ export function FolderNameDropdown() {
           {history.length > 0 && (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuLabel>最近打开</DropdownMenuLabel>
+              <DropdownMenuLabel>{t("recentOpen")}</DropdownMenuLabel>
               {history.map((entry) => (
                 <DropdownMenuItem
                   key={entry.path}

@@ -1,6 +1,7 @@
 "use client"
 
 import { Coins } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useSessionStats } from "@/contexts/session-stats-context"
 import {
   Popover,
@@ -29,6 +30,7 @@ function formatPercent(percent: number | null): string {
 }
 
 export function StatusBarTokens() {
+  const t = useTranslations("Folder.statusBar.tokens")
   const { sessionStats } = useSessionStats()
   const usage = sessionStats?.total_usage
 
@@ -55,17 +57,20 @@ export function StatusBarTokens() {
 
   const dashOffset = ICON_CIRCUMFERENCE * (1 - (contextPercent ?? 0) / 100)
 
-  const rows: { label: string; value: number }[] = []
+  const rows: {
+    key: "input" | "output" | "cacheRead" | "cacheWrite" | "total"
+    value: number
+  }[] = []
   if (hasUsage) {
     rows.push(
-      { label: "Input", value: usage.input_tokens },
-      { label: "Output", value: usage.output_tokens },
-      { label: "Cache Read", value: usage.cache_read_input_tokens },
-      { label: "Cache Write", value: usage.cache_creation_input_tokens }
+      { key: "input", value: usage.input_tokens },
+      { key: "output", value: usage.output_tokens },
+      { key: "cacheRead", value: usage.cache_read_input_tokens },
+      { key: "cacheWrite", value: usage.cache_creation_input_tokens }
     )
   }
   if (total != null) {
-    rows.push({ label: "Total", value: total })
+    rows.push({ key: "total", value: total })
   }
 
   const hasTokenSection = rows.length > 0
@@ -79,7 +84,7 @@ export function StatusBarTokens() {
           {hasContext ? (
             <>
               <svg
-                aria-label="Context window usage"
+                aria-label={t("contextWindowUsageAria")}
                 className="size-3.5"
                 viewBox={`0 0 ${ICON_VIEWBOX} ${ICON_VIEWBOX}`}
               >
@@ -127,7 +132,7 @@ export function StatusBarTokens() {
             }`}
           >
             <div className="flex items-center justify-between gap-2 text-xs font-medium whitespace-nowrap">
-              <span>Context Window</span>
+              <span>{t("contextWindow")}</span>
               <span className="tabular-nums shrink-0">
                 {formatPercent(contextPercent)}
               </span>
@@ -139,7 +144,7 @@ export function StatusBarTokens() {
               />
             </div>
             <div className="flex items-center justify-between text-xs leading-none text-muted-foreground">
-              <span>Used / Max</span>
+              <span>{t("usedMax")}</span>
               <span className="tabular-nums">
                 {contextUsed == null || contextMax == null
                   ? "--"
@@ -151,19 +156,19 @@ export function StatusBarTokens() {
         {hasTokenSection ? (
           <>
             <div className="mb-0 mt-0.5 text-xs leading-none font-medium">
-              Token Usage
+              {t("tokenUsage")}
             </div>
             <div className="space-y-0">
               {rows.map((row) => (
                 <div
-                  key={row.label}
+                  key={row.key}
                   className={`flex items-center justify-between py-0.5 text-xs leading-none ${
-                    row.label === "Total"
+                    row.key === "total"
                       ? "mt-0.5 border-t border-border pt-0.5 font-medium"
                       : "text-muted-foreground"
                   }`}
                 >
-                  <span>{row.label}</span>
+                  <span>{t(row.key)}</span>
                   <span className="tabular-nums">
                     {formatNumber(row.value)}
                   </span>
