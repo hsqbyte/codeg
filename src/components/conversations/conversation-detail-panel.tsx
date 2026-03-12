@@ -142,6 +142,7 @@ const ConversationTabView = memo(function ConversationTabView({
     appendOptimisticTurn,
     completeTurn,
     refetchDetail,
+    syncTurnMetadata,
     removeConversation,
     setExternalId,
     setLiveMessage,
@@ -191,6 +192,7 @@ const ConversationTabView = memo(function ConversationTabView({
   const createConversationPendingRef = useRef(false)
   const externalIdSavedRef = useRef(false)
   const sessionIdRef = useRef<string | null>(null)
+  const syncCancelRef = useRef<(() => void) | null>(null)
 
   useEffect(() => {
     dbConvIdRef.current = dbConversationId
@@ -293,8 +295,20 @@ const ConversationTabView = memo(function ConversationTabView({
     // Turn completed — promote liveMessage + optimisticTurns to localTurns
     completeTurn(effectiveConversationId)
 
+    // Cancel previous metadata sync (handles rapid consecutive turns)
+    syncCancelRef.current?.()
+    syncCancelRef.current = null
+
     const persistedId = dbConvIdRef.current
     if (!persistedId) return
+
+    // Async patch metadata (usage, duration_ms, model, session_stats)
+    if (persistedId > 0) {
+      syncCancelRef.current = syncTurnMetadata(
+        persistedId,
+        effectiveConversationId
+      )
+    }
 
     if (connStatus !== "disconnected" && connStatus !== "error") {
       updateConversationStatus(persistedId, "pending_review")
@@ -303,7 +317,13 @@ const ConversationTabView = memo(function ConversationTabView({
           console.error("[ConversationTabView] update status:", e)
         )
     }
-  }, [completeTurn, connStatus, effectiveConversationId, refreshConversations])
+  }, [
+    completeTurn,
+    connStatus,
+    effectiveConversationId,
+    refreshConversations,
+    syncTurnMetadata,
+  ])
 
   useEffect(() => {
     // Only sync non-null liveMessage updates to state. When conn.liveMessage
@@ -415,6 +435,7 @@ const ConversationTabView = memo(function ConversationTabView({
     mountedRef.current = true
     return () => {
       mountedRef.current = false
+      syncCancelRef.current?.()
       if (connStatusRef.current === "prompting") {
         // Agent still responding — mark for deferred cleanup
         setPendingCleanup(effectiveConversationId, true)

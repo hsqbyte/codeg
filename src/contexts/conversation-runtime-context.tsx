@@ -11,7 +11,12 @@ import {
 } from "react"
 import type { LiveMessage } from "@/contexts/acp-connections-context"
 import { getFolderConversation } from "@/lib/tauri"
-import type { DbConversationDetail, MessageTurn } from "@/lib/types"
+import type {
+  DbConversationDetail,
+  MessageTurn,
+  SessionStats,
+  TurnUsage,
+} from "@/lib/types"
 import { inferLiveToolName } from "@/lib/tool-call-normalization"
 
 export type ConversationSyncState = "idle" | "awaiting_persist"
@@ -107,6 +112,17 @@ type Action =
       type: "SET_PENDING_CLEANUP"
       conversationId: number
       pendingCleanup: boolean
+    }
+  | {
+      type: "PATCH_TURN_METADATA"
+      conversationId: number
+      turnPatches: Array<{
+        index: number
+        usage?: TurnUsage | null
+        duration_ms?: number | null
+        model?: string | null
+      }>
+      sessionStats?: SessionStats | null
     }
   | { type: "REMOVE_CONVERSATION"; conversationId: number }
   | { type: "RESET" }
@@ -431,6 +447,47 @@ function reducer(
       }
     }
 
+    case "PATCH_TURN_METADATA": {
+      const current = state.byConversationId.get(action.conversationId)
+      if (!current || current.localTurns.length === 0) return state
+
+      const patchedTurns = [...current.localTurns]
+      let changed = false
+      for (const patch of action.turnPatches) {
+        const turn = patchedTurns[patch.index]
+        if (!turn) continue
+        const newUsage = turn.usage ?? patch.usage
+        const newDuration = turn.duration_ms ?? patch.duration_ms
+        const newModel = turn.model ?? patch.model
+        if (
+          newUsage !== turn.usage ||
+          newDuration !== turn.duration_ms ||
+          newModel !== turn.model
+        ) {
+          patchedTurns[patch.index] = {
+            ...turn,
+            usage: newUsage,
+            duration_ms: newDuration,
+            model: newModel,
+          }
+          changed = true
+        }
+      }
+
+      if (!changed && !action.sessionStats) return state
+
+      const patchedDetail =
+        current.detail && action.sessionStats
+          ? { ...current.detail, session_stats: action.sessionStats }
+          : current.detail
+
+      return updateSessionInState(state, action.conversationId, () => ({
+        ...current,
+        localTurns: changed ? patchedTurns : current.localTurns,
+        detail: patchedDetail,
+      }))
+    }
+
     case "SET_PENDING_CLEANUP":
       return updateSessionInState(state, action.conversationId, (current) => ({
         ...current,
@@ -478,6 +535,10 @@ interface ConversationRuntimeContextValue {
     conversationId: number,
     syncState: ConversationSyncState
   ) => void
+  syncTurnMetadata: (
+    dbConversationId: number,
+    runtimeConversationId?: number
+  ) => () => void
   migrateConversation: (
     fromConversationId: number,
     toConversationId: number
@@ -607,6 +668,99 @@ export function ConversationRuntimeProvider({
       })
   }, [])
 
+  const syncTurnMetadata = useCallback(
+    (
+      dbConversationId: number,
+      runtimeConversationId?: number
+    ): (() => void) => {
+      const runtimeId = runtimeConversationId ?? dbConversationId
+      let cancelled = false
+      let timerId: ReturnType<typeof setTimeout> | null = null
+
+      const trySync = (attempt: number) => {
+        const delay = attempt === 0 ? 1500 : 3000
+        timerId = setTimeout(() => {
+          if (cancelled) return
+          const session =
+            stateRef.current.byConversationId.get(runtimeId)
+          if (!session || session.localTurns.length === 0) return
+          if (session.syncState === "awaiting_persist") return
+
+          getFolderConversation(dbConversationId)
+            .then((parsed) => {
+              if (cancelled) return
+              const cur =
+                stateRef.current.byConversationId.get(runtimeId)
+              if (!cur || cur.localTurns.length === 0) return
+              if (cur.syncState === "awaiting_persist") return
+
+              const localAssistantIndices: number[] = []
+              for (let i = 0; i < cur.localTurns.length; i++) {
+                if (cur.localTurns[i].role === "assistant") {
+                  localAssistantIndices.push(i)
+                }
+              }
+
+              const parsedAssistantTurns = parsed.turns.filter(
+                (t) => t.role === "assistant"
+              )
+
+              const offset =
+                parsedAssistantTurns.length - localAssistantIndices.length
+              const patches: Array<{
+                index: number
+                usage?: TurnUsage | null
+                duration_ms?: number | null
+                model?: string | null
+              }> = []
+
+              for (let i = 0; i < localAssistantIndices.length; i++) {
+                const parsedIdx = offset + i
+                if (
+                  parsedIdx < 0 ||
+                  parsedIdx >= parsedAssistantTurns.length
+                )
+                  continue
+                const pt = parsedAssistantTurns[parsedIdx]
+                if (!pt.usage && !pt.duration_ms && !pt.model) continue
+                patches.push({
+                  index: localAssistantIndices[i],
+                  usage: pt.usage,
+                  duration_ms: pt.duration_ms,
+                  model: pt.model,
+                })
+              }
+
+              if (patches.length > 0 || parsed.session_stats) {
+                dispatch({
+                  type: "PATCH_TURN_METADATA",
+                  conversationId: runtimeId,
+                  turnPatches: patches,
+                  sessionStats: parsed.session_stats,
+                })
+              }
+
+              const latestPatch = patches[patches.length - 1]
+              if (!latestPatch?.usage && attempt < 1) {
+                trySync(attempt + 1)
+              }
+            })
+            .catch(() => {
+              // Silent — localTurns content remains visible
+            })
+        }, delay)
+      }
+
+      trySync(0)
+
+      return () => {
+        cancelled = true
+        if (timerId) clearTimeout(timerId)
+      }
+    },
+    []
+  )
+
   const completeTurn = useCallback((conversationId: number) => {
     dispatch({ type: "COMPLETE_TURN", conversationId })
   }, [])
@@ -677,6 +831,7 @@ export function ConversationRuntimeProvider({
       getTimelineTurns,
       fetchDetail,
       refetchDetail,
+      syncTurnMetadata,
       completeTurn,
       appendOptimisticTurn,
       setLiveMessage,
@@ -693,6 +848,7 @@ export function ConversationRuntimeProvider({
       getTimelineTurns,
       fetchDetail,
       refetchDetail,
+      syncTurnMetadata,
       completeTurn,
       appendOptimisticTurn,
       setLiveMessage,
