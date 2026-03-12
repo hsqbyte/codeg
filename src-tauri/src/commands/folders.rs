@@ -432,15 +432,31 @@ pub async fn get_git_branch(path: String) -> Result<Option<String>, AppCommandEr
         .await
         .map_err(AppCommandError::io)?;
 
-    if !output.status.success() {
-        return Ok(None);
+    if output.status.success() {
+        let branch = String::from_utf8_lossy(&output.stdout).trim().to_string();
+        if !branch.is_empty() && branch != "HEAD" {
+            return Ok(Some(branch));
+        }
     }
 
-    let branch = String::from_utf8_lossy(&output.stdout).trim().to_string();
-    if branch.is_empty() || branch == "HEAD" {
-        return Ok(None);
+    // Fallback: symbolic-ref works on unborn branches (after git init, before first commit)
+    let sym_output = crate::process::tokio_command("git")
+        .args(["symbolic-ref", "--short", "HEAD"])
+        .current_dir(&path)
+        .output()
+        .await
+        .map_err(AppCommandError::io)?;
+
+    if sym_output.status.success() {
+        let branch = String::from_utf8_lossy(&sym_output.stdout)
+            .trim()
+            .to_string();
+        if !branch.is_empty() {
+            return Ok(Some(branch));
+        }
     }
-    Ok(Some(branch))
+
+    Ok(None)
 }
 
 #[tauri::command]
@@ -2459,6 +2475,13 @@ pub async fn git_log(
         .map_err(AppCommandError::io)?;
 
     if !output.status.success() {
+        // Empty repo (no commits yet) — return empty list instead of error
+        let stderr_str = String::from_utf8_lossy(&output.stderr);
+        if stderr_str.contains("does not have any commits yet")
+            || stderr_str.contains("unknown revision or path not in the working tree")
+        {
+            return Ok(Vec::new());
+        }
         return Err(git_command_error("log", &output.stderr));
     }
 

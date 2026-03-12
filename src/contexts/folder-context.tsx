@@ -10,6 +10,7 @@ import {
   useRef,
   type ReactNode,
 } from "react"
+import { toErrorMessage } from "@/lib/app-error"
 import { getFolder, listFolderConversations } from "@/lib/tauri"
 import type {
   AgentType,
@@ -174,7 +175,7 @@ export function FolderProvider({
     } catch (e) {
       if (!mountedRef.current) return
       if (!cached) {
-        setError(e instanceof Error ? e.message : String(e))
+        setError(toErrorMessage(e))
       }
     } finally {
       if (mountedRef.current) {

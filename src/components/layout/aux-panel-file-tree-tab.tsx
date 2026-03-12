@@ -13,6 +13,7 @@ import { revealItemInDir } from "@tauri-apps/plugin-opener"
 import ignore from "ignore"
 import { Check, ChevronRight } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { toErrorMessage } from "@/lib/app-error"
 import { toast } from "sonner"
 import { useFolderContext } from "@/contexts/folder-context"
 import { useAuxPanelContext } from "@/contexts/aux-panel-context"
@@ -947,7 +948,7 @@ export function FileTreeTab() {
           setGitStatusByPath(new Map())
         }
       } catch (e) {
-        setError(e instanceof Error ? e.message : String(e))
+        setError(toErrorMessage(e))
       } finally {
         if (!silent && !loadingReleased) setLoading(false)
       }

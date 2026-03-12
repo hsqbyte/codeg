@@ -83,6 +83,7 @@ import {
 } from "@/lib/tauri"
 import type { GitBranchList, GitLogEntry, GitLogFileChange } from "@/lib/types"
 import { toast } from "sonner"
+import { toErrorMessage } from "@/lib/app-error"
 
 function formatRelativeTime(
   dateStr: string,
@@ -684,7 +685,7 @@ export function GitLogTab() {
       } catch (e) {
         setBranchesError((prev) => ({
           ...prev,
-          [fullHash]: e instanceof Error ? e.message : String(e),
+          [fullHash]: toErrorMessage(e),
         }))
       } finally {
         setBranchesLoading((prev) => ({ ...prev, [fullHash]: false }))
@@ -727,7 +728,7 @@ export function GitLogTab() {
           )
         }
       } catch (e) {
-        setError(e instanceof Error ? e.message : String(e))
+        setError(toErrorMessage(e))
       } finally {
         if (inline) {
           setRefreshing(false)
