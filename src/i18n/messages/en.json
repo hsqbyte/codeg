@@ -183,6 +183,14 @@
       "close_all_file_tabs": {
         "title": "Close All File Tabs",
         "description": "Close all file tabs in file mode only"
+      },
+      "send_message": {
+        "title": "Send Message",
+        "description": "Send the current message in the input box"
+      },
+      "newline_in_message": {
+        "title": "Newline in Message",
+        "description": "Insert a newline in the message input box"
       }
     }
   },

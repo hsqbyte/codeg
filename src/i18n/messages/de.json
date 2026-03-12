@@ -183,6 +183,14 @@
       "close_all_file_tabs": {
         "title": "Alle Dateitabs schließen",
         "description": "Schließt alle Dateitabs nur im Dateimodus"
+      },
+      "send_message": {
+        "title": "Nachricht senden",
+        "description": "Die aktuelle Nachricht im Eingabefeld senden"
+      },
+      "newline_in_message": {
+        "title": "Zeilenumbruch einfügen",
+        "description": "Einen Zeilenumbruch im Eingabefeld einfügen"
       }
     }
   },

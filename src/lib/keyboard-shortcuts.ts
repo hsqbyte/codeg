@@ -10,6 +10,8 @@ export type ShortcutActionId =
   | "open_settings"
   | "close_current_tab"
   | "close_all_file_tabs"
+  | "send_message"
+  | "newline_in_message"
 
 export interface ShortcutDefinition {
   id: ShortcutActionId
@@ -49,7 +51,19 @@ export const SHORTCUT_DEFINITIONS: ShortcutDefinition[] = [
   {
     id: "close_all_file_tabs",
   },
+  {
+    id: "send_message",
+  },
+  {
+    id: "newline_in_message",
+  },
 ]
+
+/** Actions that allow shortcuts without modifier keys (e.g. plain Enter). */
+export const INPUT_SHORTCUT_IDS = new Set<ShortcutActionId>([
+  "send_message",
+  "newline_in_message",
+])
 
 export type ShortcutSettings = Record<ShortcutActionId, string>
 
@@ -65,6 +79,8 @@ export const DEFAULT_SHORTCUTS: ShortcutSettings = {
   open_settings: "mod+,",
   close_current_tab: "mod+w",
   close_all_file_tabs: "mod+shift+w",
+  send_message: "enter",
+  newline_in_message: "shift+enter",
 }
 
 export const SHORTCUTS_STORAGE_KEY = "settings:shortcuts:v1"
@@ -230,12 +246,16 @@ export function shortcutFromKeyboardEvent(
   event: Pick<
     KeyboardEvent,
     "key" | "metaKey" | "ctrlKey" | "altKey" | "shiftKey"
-  >
+  >,
+  /** When true, allow shortcuts without modifier keys (e.g. plain Enter). */
+  allowNoModifier = false
 ): string | null {
   const keyToken = normalizeKeyToken(event.key)
   if (!keyToken || MODIFIER_KEY_SET.has(keyToken)) return null
 
-  if (!event.metaKey && !event.ctrlKey && !event.altKey) return null
+  if (!allowNoModifier && !event.metaKey && !event.ctrlKey && !event.altKey) {
+    return null
+  }
 
   const parts: string[] = []
   if (event.metaKey || event.ctrlKey) parts.push("mod")

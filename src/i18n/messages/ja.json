@@ -183,6 +183,14 @@
       "close_all_file_tabs": {
         "title": "すべてのファイルタブを閉じる",
         "description": "ファイルモードでのみすべてのファイルタブを閉じます"
+      },
+      "send_message": {
+        "title": "メッセージを送信",
+        "description": "入力欄のメッセージを送信する"
+      },
+      "newline_in_message": {
+        "title": "メッセージ内で改行",
+        "description": "入力欄で改行を挿入する"
       }
     }
   },

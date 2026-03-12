@@ -15,6 +15,8 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { Ellipsis, FileSearch, Plus, Send, Square, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { matchShortcutEvent } from "@/lib/keyboard-shortcuts"
+import { useShortcutSettings } from "@/hooks/use-shortcut-settings"
 import { readFileBase64 } from "@/lib/tauri"
 import { disposeTauriListener } from "@/lib/tauri-listener"
 import type {
@@ -261,6 +263,7 @@ export function MessageInput({
   isActive = false,
 }: MessageInputProps) {
   const t = useTranslations("Folder.chat.messageInput")
+  const { shortcuts } = useShortcutSettings()
   const effectiveDraftStorageKey = draftStorageKey ?? attachmentTabId ?? null
   const resolvedPlaceholder = placeholder ?? t("askAnything")
   const [text, setText] = useState(() => {
@@ -932,14 +935,26 @@ export function MessageInput({
         }
       }
 
-      if (e.key === "Enter" && !e.shiftKey) {
+      if (matchShortcutEvent(e, shortcuts.send_message)) {
         e.preventDefault()
         if (!disabled) handleSend()
+      } else if (matchShortcutEvent(e, shortcuts.newline_in_message)) {
+        e.preventDefault()
+        const textarea = e.currentTarget as HTMLTextAreaElement
+        const start = textarea.selectionStart
+        const end = textarea.selectionEnd
+        const value = textarea.value
+        const newValue = value.substring(0, start) + "\n" + value.substring(end)
+        setText(newValue)
+        requestAnimationFrame(() => {
+          textarea.selectionStart = textarea.selectionEnd = start + 1
+        })
       }
     },
     [
       disabled,
       handleSend,
+      shortcuts,
       slashMenuOpen,
       filteredSlashCommands,
       slashSelectedIndex,

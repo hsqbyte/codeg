@@ -4,6 +4,8 @@ import { useState, useRef, useEffect, useCallback } from "react"
 import { useTranslations } from "next-intl"
 import { MessageCircleQuestion, SendHorizonal } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { matchShortcutEvent } from "@/lib/keyboard-shortcuts"
+import { useShortcutSettings } from "@/hooks/use-shortcut-settings"
 import type { PendingQuestion } from "@/contexts/acp-connections-context"
 
 interface QuestionDialogProps {
@@ -13,6 +15,7 @@ interface QuestionDialogProps {
 
 export function QuestionDialog({ question, onAnswer }: QuestionDialogProps) {
   const t = useTranslations("Folder.chat.questionDialog")
+  const { shortcuts } = useShortcutSettings()
   const [answer, setAnswer] = useState("")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const prevQuestionIdRef = useRef<string | null>(null)
@@ -40,12 +43,12 @@ export function QuestionDialog({ question, onAnswer }: QuestionDialogProps) {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (e.key === "Enter" && !e.shiftKey) {
+      if (matchShortcutEvent(e, shortcuts.send_message)) {
         e.preventDefault()
         handleSubmit()
       }
     },
-    [handleSubmit]
+    [handleSubmit, shortcuts]
   )
 
   if (!question) return null

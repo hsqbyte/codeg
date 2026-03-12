@@ -8,6 +8,7 @@ import { useIsMac } from "@/hooks/use-is-mac"
 import { useShortcutSettings } from "@/hooks/use-shortcut-settings"
 import {
   DEFAULT_SHORTCUTS,
+  INPUT_SHORTCUT_IDS,
   SHORTCUT_DEFINITIONS,
   type ShortcutActionId,
   formatShortcutLabel,
@@ -64,7 +65,8 @@ export function ShortcutSettings() {
         return
       }
 
-      const shortcut = shortcutFromKeyboardEvent(event)
+      const allowNoModifier = INPUT_SHORTCUT_IDS.has(recordingAction)
+      const shortcut = shortcutFromKeyboardEvent(event, allowNoModifier)
       if (!shortcut) return
 
       const conflict = SHORTCUT_DEFINITIONS.find(

@@ -183,6 +183,14 @@
       "close_all_file_tabs": {
         "title": "Cerrar todas las pestañas de archivos",
         "description": "Cierra todas las pestañas de archivos solo en modo de archivos"
+      },
+      "send_message": {
+        "title": "Enviar mensaje",
+        "description": "Enviar el mensaje actual en el cuadro de entrada"
+      },
+      "newline_in_message": {
+        "title": "Nueva línea en mensaje",
+        "description": "Insertar una nueva línea en el cuadro de entrada"
       }
     }
   },

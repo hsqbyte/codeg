@@ -183,6 +183,14 @@
       "close_all_file_tabs": {
         "title": "Fechar todas as abas de arquivo",
         "description": "Fecha todas as abas de arquivo apenas no modo de arquivos"
+      },
+      "send_message": {
+        "title": "Enviar mensagem",
+        "description": "Enviar a mensagem atual na caixa de entrada"
+      },
+      "newline_in_message": {
+        "title": "Nova linha na mensagem",
+        "description": "Inserir uma nova linha na caixa de entrada"
       }
     }
   },

@@ -183,6 +183,14 @@
       "close_all_file_tabs": {
         "title": "關閉全部檔案分頁",
         "description": "僅在檔案模式下關閉所有檔案分頁"
+      },
+      "send_message": {
+        "title": "傳送訊息",
+        "description": "在輸入框中傳送目前的訊息"
+      },
+      "newline_in_message": {
+        "title": "訊息換行",
+        "description": "在輸入框中插入換行符"
       }
     }
   },

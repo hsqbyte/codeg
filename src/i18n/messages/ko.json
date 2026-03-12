@@ -183,6 +183,14 @@
       "close_all_file_tabs": {
         "title": "모든 파일 탭 닫기",
         "description": "파일 모드에서만 모든 파일 탭을 닫습니다"
+      },
+      "send_message": {
+        "title": "메시지 보내기",
+        "description": "입력창에서 현재 메시지를 전송"
+      },
+      "newline_in_message": {
+        "title": "메시지 줄바꿈",
+        "description": "입력창에 줄바꿈을 삽입"
       }
     }
   },

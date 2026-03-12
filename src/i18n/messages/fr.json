@@ -183,6 +183,14 @@
       "close_all_file_tabs": {
         "title": "Fermer tous les onglets de fichiers",
         "description": "Fermer tous les onglets de fichiers uniquement en mode fichiers"
+      },
+      "send_message": {
+        "title": "Envoyer le message",
+        "description": "Envoyer le message actuel dans la zone de saisie"
+      },
+      "newline_in_message": {
+        "title": "Retour à la ligne",
+        "description": "Insérer un retour à la ligne dans la zone de saisie"
       }
     }
   },
