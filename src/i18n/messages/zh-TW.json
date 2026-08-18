@@ -53,7 +53,8 @@
       "office_tools": "辦公工具",
       "skill_packs": "技能包",
       "quick_messages": "快捷訊息",
-      "logs": "執行日誌"
+      "logs": "執行日誌",
+      "audio": "語音輸入"
     }
   },
   "AppearanceSettings": {
@@ -4966,5 +4967,33 @@
     "emptyAction": "統計我的工作階段",
     "loadFailed": "用量載入失敗",
     "truncatedNotice": "此範圍過大 —— 下面的數字只涵蓋其中最近的一段。"
+  },
+  "AudioSettings": {
+    "title": "語音輸入",
+    "subtitle": "把語音轉成文字填進輸入框",
+    "modeLocal": "本機",
+    "modeRemote": "远程",
+    "language": "語言",
+    "languageHint": "你說話的語言;「自動」讓模型自己偵測",
+    "lang_auto": "自動偵測",
+    "lang_zh": "中文",
+    "lang_en": "英語",
+    "lang_ja": "日語",
+    "lang_ko": "韓語",
+    "localUnavailable": "此版本未內建本機語音引擎,請改用遠端模式。",
+    "localHint": "下載一個模型即可在本機轉寫——離線、私密。",
+    "active": "使用中",
+    "installed": "已安裝",
+    "use": "使用",
+    "delete": "刪除",
+    "download": "下載",
+    "cancel": "取消",
+    "downloadFailed": "下載失敗:{message}",
+    "remoteHint": "把音訊發到另一台裝了模型的 codeg 轉寫——填寫它的位址與權杖。",
+    "remoteUrl": "位址",
+    "remoteToken": "權杖",
+    "testConnection": "測試連線",
+    "remoteOk": "連線成功——{count} 個模型就緒",
+    "remoteFailed": "連線失敗:{message}"
   }
 }

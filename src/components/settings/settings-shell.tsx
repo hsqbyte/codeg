@@ -17,6 +17,7 @@ import {
   Keyboard,
   Menu,
   MessageSquareText,
+  Mic,
   SendHorizontal,
   Palette,
   PlugZap,
@@ -52,6 +53,7 @@ interface SettingsNavItem {
     | "chat_channels"
     | "system"
     | "web_service"
+    | "audio"
     | "logs"
   icon: ComponentType<{ className?: string }>
 }
@@ -116,6 +118,11 @@ const SETTINGS_NAV_ITEMS: SettingsNavItem[] = [
     href: "/settings/web-service",
     labelKey: "web_service",
     icon: Globe,
+  },
+  {
+    href: "/settings/audio",
+    labelKey: "audio",
+    icon: Mic,
   },
   {
     href: "/settings/logs",

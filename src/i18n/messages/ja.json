@@ -53,7 +53,8 @@
       "office_tools": "Officeツール",
       "skill_packs": "スキルパック",
       "quick_messages": "クイックメッセージ",
-      "logs": "実行ログ"
+      "logs": "実行ログ",
+      "audio": "Voice Input"
     }
   },
   "AppearanceSettings": {
@@ -4966,5 +4967,33 @@
     "emptyAction": "セッションを集計",
     "loadFailed": "使用量を読み込めませんでした",
     "truncatedNotice": "期間が非常に長いため、表示中の数値は直近の一部のみを対象としています。"
+  },
+  "AudioSettings": {
+    "title": "Voice Input",
+    "subtitle": "Speech-to-text for the message box",
+    "modeLocal": "Local",
+    "modeRemote": "Remote",
+    "language": "Language",
+    "languageHint": "The language you speak; Auto lets the model detect it",
+    "lang_auto": "Auto",
+    "lang_zh": "Chinese",
+    "lang_en": "English",
+    "lang_ja": "Japanese",
+    "lang_ko": "Korean",
+    "localUnavailable": "This build has no local speech engine — use Remote mode.",
+    "localHint": "Download a model to transcribe on this machine — offline and private.",
+    "active": "In use",
+    "installed": "Installed",
+    "use": "Use",
+    "delete": "Delete",
+    "download": "Download",
+    "cancel": "Cancel",
+    "downloadFailed": "Download failed: {message}",
+    "remoteHint": "Send audio to another codeg that has a model — fill in its address and token.",
+    "remoteUrl": "Address",
+    "remoteToken": "Token",
+    "testConnection": "Test connection",
+    "remoteOk": "Connected — {count} model(s) ready",
+    "remoteFailed": "Connection failed: {message}"
   }
 }
