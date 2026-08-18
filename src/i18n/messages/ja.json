@@ -2716,7 +2716,11 @@
         "mentionGroupAgent": "エージェント",
         "mentionGroupSession": "セッション",
         "mentionGroupCommit": "コミット",
-        "mentionGroupSkill": "スキル"
+        "mentionGroupSkill": "スキル",
+        "voiceInput": "Voice input",
+        "voiceInputStop": "Stop & transcribe",
+        "voiceInputTranscribing": "Transcribing…",
+        "voiceInputError": "Voice input failed: {message}"
       },
       "messageQueue": {
         "addToQueue": "キューに追加",

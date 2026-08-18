@@ -2716,7 +2716,11 @@
         "mentionGroupAgent": "Agents",
         "mentionGroupSession": "Sessions",
         "mentionGroupCommit": "Commits",
-        "mentionGroupSkill": "Compétences"
+        "mentionGroupSkill": "Compétences",
+        "voiceInput": "Voice input",
+        "voiceInputStop": "Stop & transcribe",
+        "voiceInputTranscribing": "Transcribing…",
+        "voiceInputError": "Voice input failed: {message}"
       },
       "messageQueue": {
         "addToQueue": "Mettre en file",

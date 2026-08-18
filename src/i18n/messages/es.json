@@ -2716,7 +2716,11 @@
         "mentionGroupAgent": "Agentes",
         "mentionGroupSession": "Sesiones",
         "mentionGroupCommit": "Commits",
-        "mentionGroupSkill": "Habilidades"
+        "mentionGroupSkill": "Habilidades",
+        "voiceInput": "Voice input",
+        "voiceInputStop": "Stop & transcribe",
+        "voiceInputTranscribing": "Transcribing…",
+        "voiceInputError": "Voice input failed: {message}"
       },
       "messageQueue": {
         "addToQueue": "Agregar a la cola",

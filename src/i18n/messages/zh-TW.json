@@ -2716,7 +2716,11 @@
         "mentionGroupAgent": "智能體",
         "mentionGroupSession": "工作階段",
         "mentionGroupCommit": "提交",
-        "mentionGroupSkill": "技能"
+        "mentionGroupSkill": "技能",
+        "voiceInput": "語音輸入",
+        "voiceInputStop": "停止並轉寫",
+        "voiceInputTranscribing": "轉寫中…",
+        "voiceInputError": "語音輸入失敗:{message}"
       },
       "messageQueue": {
         "addToQueue": "加入佇列",

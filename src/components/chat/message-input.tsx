@@ -129,6 +129,7 @@ import type { Editor, JSONContent } from "@tiptap/core"
 import { useReferenceSearch } from "@/components/chat/composer/use-reference-search"
 import { useComposerMentionLabels } from "@/components/chat/composer/use-composer-mention-labels"
 import { ComposerAddMenu } from "@/components/chat/composer/composer-add-menu"
+import { VoiceInputButton } from "@/components/chat/composer/voice-input-button"
 import { ComposerImageThumbnails } from "@/components/chat/composer/composer-image-thumbnails"
 import { useComposerAttachments } from "@/components/chat/composer/use-composer-attachments"
 import { useComposerShortcuts } from "@/components/chat/composer/use-composer-shortcuts"
@@ -1913,6 +1914,12 @@ export function MessageInput({
                     slashCommands={slashCommands}
                     onAddFeedback={onAddFeedback}
                     feedbackAddDisabled={feedbackAddDisabled}
+                  />
+                  <VoiceInputButton
+                    disabled={disabled}
+                    onInsert={(text) =>
+                      editorRef.current?.insertTextAtCursor(text)
+                    }
                   />
                   {hasInlineSelectors && (
                     <div className="hidden min-w-0 items-end gap-1 @[30rem]:flex">

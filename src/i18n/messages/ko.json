@@ -2716,7 +2716,11 @@
         "mentionGroupAgent": "에이전트",
         "mentionGroupSession": "세션",
         "mentionGroupCommit": "커밋",
-        "mentionGroupSkill": "스킬"
+        "mentionGroupSkill": "스킬",
+        "voiceInput": "Voice input",
+        "voiceInputStop": "Stop & transcribe",
+        "voiceInputTranscribing": "Transcribing…",
+        "voiceInputError": "Voice input failed: {message}"
       },
       "messageQueue": {
         "addToQueue": "대기열에 추가",
