@@ -3536,6 +3536,57 @@ export interface OfficecliInstallEvent {
   payload: string
 }
 
+// ─── Speech-to-text (local whisper) ──────────────────────────────────────
+// Mirror of `commands::transcribe` in the Rust backend (camelCase wire form).
+
+export interface SttCatalogEntry {
+  id: string
+  label: string
+  sizeBytes: number
+  note: string
+  /** The model `.bin` is downloaded and ready on this host. */
+  installed: boolean
+}
+
+export interface SttCatalog {
+  models: SttCatalogEntry[]
+  /** This build has the `stt-local` whisper engine (desktop). When false, the
+   * UI hides local mode and steers to remote transcription. */
+  localAvailable: boolean
+}
+
+export interface TranscribeRequest {
+  /** 16 kHz mono 16-bit PCM WAV, base64-encoded. */
+  audioBase64: string
+  modelId: string
+  /** Whisper language code (`"zh"`, `"en"`, …) or `"auto"` to detect. */
+  language: string
+}
+
+export interface TranscribeResult {
+  text: string
+  elapsedMs: number
+  audioMs: number
+}
+
+export interface DownloadModelRequest {
+  modelId: string
+  /** Client-minted id correlating progress events + cancellation. */
+  taskId: string
+}
+
+export type SttDownloadKind = "started" | "progress" | "completed" | "failed"
+
+/** Streamed on `app://stt-model-download`; filter by `taskId`. */
+export interface SttDownloadEvent {
+  taskId: string
+  kind: SttDownloadKind
+  modelId: string
+  downloaded: number
+  total: number
+  message: string
+}
+
 // ─── Chat Channels ───
 
 export type ChannelType = "lark" | "telegram" | "weixin"

@@ -111,6 +111,10 @@ import type {
   SystemProxySettings,
   SystemRenderingSettings,
   SystemTerminalSettings,
+  SttCatalog,
+  TranscribeRequest,
+  TranscribeResult,
+  DownloadModelRequest,
   LogSettings,
   LogSettingsView,
   LogRecord,
@@ -1528,6 +1532,43 @@ export async function updateSystemProxySettings(
   settings: SystemProxySettings
 ): Promise<SystemProxySettings> {
   return getTransport().call("update_system_proxy_settings", { settings })
+}
+
+// ─── Speech-to-text (local whisper) ──────────────────────────────────────
+
+/** The model catalog + which are downloaded, and whether this build has the
+ *  local whisper engine. Also works against a remote codeg over its API. */
+export async function getSttCatalog(): Promise<SttCatalog> {
+  return getTransport().call("stt_catalog")
+}
+
+/** Transcribe a recorded 16 kHz mono WAV (base64). A `large-v3` pass is slow,
+ *  so allow well beyond the 60s default web timeout. */
+export async function transcribeAudio(
+  req: TranscribeRequest
+): Promise<TranscribeResult> {
+  return getTransport().call("transcribe", { req }, { timeoutMs: 300_000 })
+}
+
+/** Start a model download. Progress streams over `app://stt-model-download`
+ *  (subscribe + filter by `taskId`); this call resolves when it finishes, so
+ *  give it a long ceiling for multi-GB models on slow links. */
+export async function downloadSttModel(
+  req: DownloadModelRequest
+): Promise<void> {
+  return getTransport().call(
+    "download_stt_model",
+    { req },
+    { timeoutMs: 3_600_000 }
+  )
+}
+
+export async function cancelSttModelDownload(taskId: string): Promise<void> {
+  return getTransport().call("cancel_stt_model_download", { taskId })
+}
+
+export async function deleteSttModel(modelId: string): Promise<void> {
+  return getTransport().call("delete_stt_model", { modelId })
 }
 
 export async function getSystemLanguageSettings(): Promise<SystemLanguageSettings> {
