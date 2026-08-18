@@ -614,6 +614,18 @@ pub fn build_router(
         .route("/stt_catalog", post(handlers::transcribe::stt_catalog))
         .route("/transcribe", post(handlers::transcribe::transcribe))
         .route(
+            "/download_stt_model",
+            post(handlers::transcribe::download_stt_model),
+        )
+        .route(
+            "/cancel_stt_model_download",
+            post(handlers::transcribe::cancel_stt_model_download),
+        )
+        .route(
+            "/delete_stt_model",
+            post(handlers::transcribe::delete_stt_model),
+        )
+        .route(
             "/update_system_proxy_settings",
             post(handlers::system_settings::update_system_proxy_settings),
         )
