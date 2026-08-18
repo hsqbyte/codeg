@@ -611,6 +611,8 @@ pub fn build_router(
             "/probe_terminal_shell_path",
             post(handlers::system_settings::probe_terminal_shell_path),
         )
+        .route("/stt_catalog", post(handlers::transcribe::stt_catalog))
+        .route("/transcribe", post(handlers::transcribe::transcribe))
         .route(
             "/update_system_proxy_settings",
             post(handlers::system_settings::update_system_proxy_settings),

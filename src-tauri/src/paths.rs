@@ -14,6 +14,7 @@ const LOGS_DIR_NAME: &str = "logs";
 const TURN_TIMINGS_DIR_NAME: &str = "turn-timings";
 const ACP_TRANSCRIPTS_DIR_NAME: &str = "acp-transcripts";
 const BACKGROUNDS_DIR_NAME: &str = "backgrounds";
+const STT_MODELS_DIR_NAME: &str = "stt-models";
 
 /// `$CODEG_HOME` if set (and non-empty), else `~/.codeg/`.
 ///
@@ -99,6 +100,28 @@ pub fn codeg_backgrounds_root() -> PathBuf {
     dirs::home_dir()
         .map(|h| h.join(CODEG_DIR_NAME).join(BACKGROUNDS_DIR_NAME))
         .unwrap_or_else(|| PathBuf::from(CODEG_DIR_NAME).join(BACKGROUNDS_DIR_NAME))
+}
+
+/// Root directory for downloaded speech-to-text (whisper) model files.
+///
+/// Resolution mirrors [`codeg_pets_root`] exactly:
+/// 1. `$CODEG_HOME/stt-models` (explicit override)
+/// 2. `$CODEG_DATA_DIR/stt-models` (server-mode data directory)
+/// 3. `~/.codeg/stt-models` (desktop default)
+///
+/// The `.bin` model files here are downloaded on demand from the Audio
+/// settings panel and reused across launches; they are never garbage-collected
+/// by codeg (a user who picked `large-v3` keeps it until they delete it).
+pub fn codeg_stt_models_root() -> PathBuf {
+    if let Some(custom) = std::env::var_os("CODEG_HOME").filter(|s| !s.is_empty()) {
+        return PathBuf::from(custom).join(STT_MODELS_DIR_NAME);
+    }
+    if let Some(data) = std::env::var_os("CODEG_DATA_DIR").filter(|s| !s.is_empty()) {
+        return PathBuf::from(data).join(STT_MODELS_DIR_NAME);
+    }
+    dirs::home_dir()
+        .map(|h| h.join(CODEG_DIR_NAME).join(STT_MODELS_DIR_NAME))
+        .unwrap_or_else(|| PathBuf::from(CODEG_DIR_NAME).join(STT_MODELS_DIR_NAME))
 }
 
 /// Root directory for application diagnostic logs (rotating files written by

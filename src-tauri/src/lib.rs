@@ -75,7 +75,7 @@ mod tauri_app {
         remote_workspace as remote_workspace_commands, science as science_commands,
         session_info as session_info_commands,
         system_settings, terminal as terminal_commands,
-        token_usage as token_usage_commands,
+        token_usage as token_usage_commands, transcribe as transcribe_commands,
         version_control, windows, work_task as work_task_commands,
         workspace_state as workspace_state_commands,
     };
@@ -1312,6 +1312,8 @@ mod tauri_app {
                 automation_commands::automation_compute_next_run,
                 automation_commands::automation_run_now,
                 automation_commands::automation_cancel_run,
+                transcribe_commands::stt_catalog,
+                transcribe_commands::transcribe,
                 token_usage_commands::token_usage_report,
                 token_usage_commands::token_usage_facets,
                 token_usage_commands::token_usage_status,

@@ -29,7 +29,14 @@ tauri-runtime = [
     "dep:tauri-plugin-notification",
     "dep:tauri-plugin-single-instance",
     "dep:keyring",
+    "stt-local",
 ]
+# Local speech-to-text via whisper.cpp (whisper-rs). Folded into the desktop
+# `codeg` build above; the headless `codeg-server` / `codeg-mcp` bins build
+# `--no-default-features` and can opt in with `--features stt-local`. All
+# whisper call sites are `#[cfg(feature = "stt-local")]`-gated so the feature
+# staying off leaves those two bins compiling unchanged.
+stt-local = ["dep:whisper-rs", "dep:hound"]
 # Exposes test scaffolding (`AppState::new_for_test`, `EventEmitter::test_web_only`,
 # `ConnectionManager::insert_test_connection`, parser `with_base_dir`, the
 # `db::test_helpers` module) for integration tests in `tests/*.rs`. Without
@@ -110,6 +117,11 @@ toml_edit = "0.19"
 serde_yaml = "0.9"
 notify = "6"
 base64 = "0.22"
+# Local STT (feature `stt-local`). whisper-rs links whisper.cpp (a C++ build);
+# the macOS block below adds the `metal` feature for GPU acceleration. hound
+# decodes the 16 kHz mono WAV the frontend records into f32 PCM for whisper.
+whisper-rs = { version = "0.14", default-features = false, optional = true }
+hound = { version = "3.5", optional = true }
 agent-client-protocol-schema = { version = "0.11", features = ["unstable_session_usage", "unstable_session_fork", "unstable_session_resume", "unstable_elicitation", "unstable_boolean_config"] }
 kill_tree = { version = "0.2", features = ["tokio"] }
 which = "7"
@@ -148,6 +160,9 @@ tauri-plugin-single-instance = { version = "2", optional = true }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 mac-notification-sys = "0.6"
+# Union with the base `whisper-rs` entry above: on macOS whisper.cpp builds
+# with the Metal backend (GPU); other targets fall back to CPU-only.
+whisper-rs = { version = "0.14", default-features = false, features = ["metal"], optional = true }
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows-sys = { version = "0.59", features = ["Win32_Storage_FileSystem", "Win32_Foundation", "Win32_System_Threading"] }
